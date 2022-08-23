@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/23 20:13:28 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/23 21:37:48 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,15 +71,17 @@ typedef enum e_message
 	MALLOC,
 }	t_message;
 
-typdef	struct s_philo
+typedef	struct s_philo
 {
-	int32_t philo_id;
+	int32_t id;
 	int32_t count;
 	int32_t time_die;
 	int32_t time_eat;
 	int32_t time_sleep;
 	int32_t eat_count;
+	pthread_mutex_t left_fork;
+	pthread_mutex_t right_fork;
 } t_philo;
 
-void	philo(void);
+void	philo(int argc, char **argv);
 #endif
