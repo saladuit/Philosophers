@@ -6,13 +6,13 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/24 19:13:06 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/24 19:39:40 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void *philo_routine(void *p) {
+void *philosopher(void *p) {
 	t_shared	*shared;
 
 	shared = (t_shared *)p;
@@ -21,17 +21,16 @@ void *philo_routine(void *p) {
 	return (NULL);
 }
 
-void	construct_default_philo(t_philo *philo, char **argv)
+void	construct_settings(t_philo *settings, char **argv)
 {
-	philo->id = 0;
-	philo->count = ft_atoi(argv[1]); //exit if count is bigger than MAX_PHIL
-	philo->time_die = ft_atoi(argv[2]);
-	philo->time_eat = ft_atoi(argv[3]);
-	philo->time_sleep = ft_atoi(argv[4]);
+	settings->id = 0;
+	settings->time_die = ft_atoi(argv[2]);
+	settings->time_eat = ft_atoi(argv[3]);
+	settings->time_sleep = ft_atoi(argv[4]);
 	if (argv[5])
-		philo->eat_count = ft_atoi(argv[5]);
+		settings->eat_count = ft_atoi(argv[5]);
 	else
-		philo->eat_count = -1;
+		settings->eat_count = -1;
 }
 
 void	collect_forks(pthread_mutex_t	*forks, int32_t count)
@@ -48,44 +47,56 @@ void	collect_forks(pthread_mutex_t	*forks, int32_t count)
 
 pthread_t make_thread(void *(*routine)(void *), void *shared)
 {
-    pthread_t thread;
+	pthread_t	thread;
 
-    if (pthread_create(&thread, NULL, routine, shared))
-        exit(-1);
-    return (thread);
+	if (pthread_create(&thread, NULL, routine, shared))
+		exit(-1);
+	return (thread);
 }
 
-void	fill_philo_array(t_philo *philo_array, t_philo *philo_settings)
+void	fill_philo_array(t_philo *array, t_philo *settings, int32_t count)
 {
 
-	while (philo_settings->id < philo_settings->count)
+	while (settings->id < count)
 	{
-		*philo_array = *philo_settings;
-		philo_array->left_fork = philo_settings->id;
-		philo_array->right_fork = (philo_settings->id + 1) % philo_settings->count;
-		philo_settings->id++;
-		philo_array++;
+		*array = *settings;
+		array->left_fork = settings->id;
+		array->right_fork = (settings->id + 1) % count;
+		settings->id++;
+		array++;
 	}
-	memset((void *)&*philo_array, 0, sizeof(t_philo)); //remove?
+//	memset((void *)&*philo_array, 0, sizeof(t_philo)); //remove?
 }
 
-int32_t	init_philosophers(t_philo *philo_array, char **argv)
+int32_t	init_philosophers(t_philo *array, char **argv)
 {
-	t_philo philo_settings;
+	t_philo settings;
+	int32_t	count;
 
-	construct_default_philo(&philo_settings, argv);
-	fill_philo_array(philo_array, &philo_settings);
-	return (philo_settings.count);
+	count = ft_atoi(argv[1]);
+	construct_settings(&settings, argv);
+	fill_philo_array(array, &settings, count);
+	return (count);
 }
 
 void	init(t_shared *shared, char **argv)
 {
-	collect_forks(shared->forks, init_philosophers(shared->philo_array, argv));
+	shared->count = init_philosophers(shared->array, argv);
+	collect_forks(shared->forks, shared->count);
 }
+
 void	start_eating_spaghetti(t_shared *shared)
 {
+	int32_t	i;
 
+	i = 0;
+	while (i < shared->count)
+	{
+		shared->philosophers[i] = make_thread(philosopher, shared);
+		i++;
+	}
 }
+
 void	philo(char **argv)
 {
 	t_shared	shared;
