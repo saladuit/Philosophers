@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/24 19:39:40 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/24 21:06:17 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,16 +14,20 @@
 
 void *philosopher(void *p) {
 	t_shared	*shared;
+	int32_t		id;
 
+	id = 0;
 	shared = (t_shared *)p;
-	if (p == NULL)
-		return (NULL);
+	pthread_mutex_lock(&shared->id_lock);
+	id = shared->id;
+	shared->id++;
+	printf("I am philosopher: %d\n", id);
+	pthread_mutex_unlock(&shared->id_lock);
 	return (NULL);
 }
 
 void	construct_settings(t_philo *settings, char **argv)
 {
-	settings->id = 0;
 	settings->time_die = ft_atoi(argv[2]);
 	settings->time_eat = ft_atoi(argv[3]);
 	settings->time_sleep = ft_atoi(argv[4]);
@@ -45,27 +49,19 @@ void	collect_forks(pthread_mutex_t	*forks, int32_t count)
 	}
 }
 
-pthread_t make_thread(void *(*routine)(void *), void *shared)
-{
-	pthread_t	thread;
-
-	if (pthread_create(&thread, NULL, routine, shared))
-		exit(-1);
-	return (thread);
-}
-
 void	fill_philo_array(t_philo *array, t_philo *settings, int32_t count)
 {
+	int32_t		i;
 
-	while (settings->id < count)
+	i = 0;
+	while (i < count)
 	{
 		*array = *settings;
-		array->left_fork = settings->id;
-		array->right_fork = (settings->id + 1) % count;
-		settings->id++;
+		array->left_fork = i;
+		array->right_fork = (i + 1) % count;
+		i++;
 		array++;
 	}
-//	memset((void *)&*philo_array, 0, sizeof(t_philo)); //remove?
 }
 
 int32_t	init_philosophers(t_philo *array, char **argv)
@@ -83,8 +79,24 @@ void	init(t_shared *shared, char **argv)
 {
 	shared->count = init_philosophers(shared->array, argv);
 	collect_forks(shared->forks, shared->count);
+	pthread_mutex_init(&shared->id_lock, NULL);
 }
 
+pthread_t	make_thread(void *(*routine)(void *), void *shared)
+{
+	pthread_t	thread;
+
+	thread = NULL;
+	if (pthread_create(&thread, NULL, routine, shared))
+		exit(-1);
+	return (thread);
+}
+
+void	join_thread(pthread_t *thread)
+{
+	if (pthread_join(*thread, NULL))
+		exit(-1);
+}
 void	start_eating_spaghetti(t_shared *shared)
 {
 	int32_t	i;
@@ -93,6 +105,12 @@ void	start_eating_spaghetti(t_shared *shared)
 	while (i < shared->count)
 	{
 		shared->philosophers[i] = make_thread(philosopher, shared);
+		i++;
+	}
+	i = 0;
+	while (i < shared->count)
+	{
+		join_thread(&shared->philosophers[i]);
 		i++;
 	}
 }
