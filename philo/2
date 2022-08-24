@@ -6,13 +6,13 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/24 19:13:06 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/24 18:59:15 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-void *philo_routine(void *p) {
+void *spaghetti_routine(void *p) {
 	t_shared	*shared;
 
 	shared = (t_shared *)p;
@@ -24,7 +24,7 @@ void *philo_routine(void *p) {
 void	construct_default_philo(t_philo *philo, char **argv)
 {
 	philo->id = 0;
-	philo->count = ft_atoi(argv[1]); //exit if count is bigger than MAX_PHIL
+	philo->count = ft_atoi(argv[1]); //exit if count is bigger than MAX
 	philo->time_die = ft_atoi(argv[2]);
 	philo->time_eat = ft_atoi(argv[3]);
 	philo->time_sleep = ft_atoi(argv[4]);
@@ -50,7 +50,7 @@ pthread_t make_thread(void *(*routine)(void *), void *shared)
 {
     pthread_t thread;
 
-    if (pthread_create(&thread, NULL, routine, shared))
+    if (pthread_create(&thread, NULL, philo_routine, shared))
         exit(-1);
     return (thread);
 }
@@ -75,21 +75,17 @@ int32_t	init_philosophers(t_philo *philo_array, char **argv)
 
 	construct_default_philo(&philo_settings, argv);
 	fill_philo_array(philo_array, &philo_settings);
-	return (philo_settings.count);
+	return (philo_settings->count);
 }
 
 void	init(t_shared *shared, char **argv)
 {
-	collect_forks(shared->forks, init_philosophers(shared->philo_array, argv));
-}
-void	start_eating_spaghetti(t_shared *shared)
-{
-
+	collect_forks(forks, init_philosophers(shared->philo_array, argv));
 }
 void	philo(char **argv)
 {
 	t_shared	shared;
 
 	init(&shared, argv);
-	start_eating_spaghetti(&shared);
+	eat_spaghetti(&shared);
 }

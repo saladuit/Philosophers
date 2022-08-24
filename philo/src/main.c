@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:09:40 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/23 20:38:35 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/24 19:03:54 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,6 @@ int	main(int argc, char **argv)
 {
 	if (argc != 5 && argc != 6)
 		return (1);
-	philo(argc, argv);
+	philo(argv);
 	return (0);
 }
