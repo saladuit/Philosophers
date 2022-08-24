@@ -6,23 +6,29 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/24 21:06:17 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/24 21:39:30 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
+int32_t	get_id(int16_t *shared_id, pthread_mutex_t id_lock) {
+	int32_t		id;
+
+	pthread_mutex_lock(&id_lock);
+	(*shared_id)++;
+	id = *shared_id;
+	printf("I am philosopher: %d\n", id);
+	pthread_mutex_unlock(&id_lock);
+	return (id);
+}
+
 void *philosopher(void *p) {
 	t_shared	*shared;
 	int32_t		id;
 
-	id = 0;
 	shared = (t_shared *)p;
-	pthread_mutex_lock(&shared->id_lock);
-	id = shared->id;
-	shared->id++;
-	printf("I am philosopher: %d\n", id);
-	pthread_mutex_unlock(&shared->id_lock);
+	id = get_id(&shared->id, shared->id_lock);
 	return (NULL);
 }
 
@@ -105,11 +111,6 @@ void	start_eating_spaghetti(t_shared *shared)
 	while (i < shared->count)
 	{
 		shared->philosophers[i] = make_thread(philosopher, shared);
-		i++;
-	}
-	i = 0;
-	while (i < shared->count)
-	{
 		join_thread(&shared->philosophers[i]);
 		i++;
 	}
