@@ -6,26 +6,39 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/25 10:44:11 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/25 11:12:17 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-int32_t	get_id(int16_t *shared_id, pthread_mutex_t id_lock) {
-	int32_t		id;
+void	take_fork(pthread_mutex_t *fork, time_t time, int32_t id)
+{
+	if (pthread_mutex_lock(&fork))
+		exit(-1);
+	printf("%d %d has taken a fork\n", time, id);
+}
 
-	pthread_mutex_lock(&id_lock);
+void	put_down_fork(pthread_mutex_t *fork)
+{
+	pthread_mutex_unlock(&fork);
+}
+
+int8_t	get_id(int32_t *shared_id, pthread_mutex_t id_lock) {
+	int8_t		id;
+
+	if (pthread_mutex_lock(&id_lock))
+		exit(-1);
 	(*shared_id)++;
 	id = *shared_id;
 	printf("I am philosopher: %d\n", id);
-	pthread_mutex_unlock(&id_lock);
+	if (pthread_mutex_unlock(&id_lock)
 	return (id);
 }
 
 void *philosopher(void *p) {
 	t_shared	*shared;
-	int32_t		id;
+	int8_t		id;
 
 	shared = (t_shared *)p;
 	id = get_id(&shared->id, shared->id_lock);
@@ -104,7 +117,7 @@ void	join_thread(pthread_t *thread)
 		exit(-1);
 }
 
-void	start_eating_spaghetti(t_shared *shared)
+void	start_diner(t_shared *shared)
 {
 	int32_t	i;
 
@@ -122,5 +135,5 @@ void	philo(char **argv)
 	t_shared	shared;
 
 	init(&shared, argv);
-	start_eating_spaghetti(&shared);
+	start_diner(&shared);
 }
