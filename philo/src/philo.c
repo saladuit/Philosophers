@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/25 17:57:57 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/25 18:28:57 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,10 +61,15 @@ int16_t	get_id(pthread_mutex_t *id_lock, int32_t *shared_id)
 void	*philosopher(void *p) {
 	t_shared	*shared;
 	int16_t		id;
+	struct timeval time;
+	time_t	milsec;
 
 	shared = (t_shared *)p;
 	while (!ft_check_shared_bool(&shared->mutexes.start, &shared->start))
 		continue ;
+	gettimeofday(&time, NULL);
+	milsec = time.tv_sec;
+	printf("%ld\n", milsec);
 	id = get_id(&shared->mutexes.id, &shared->id);
 	ft_switch_shared_bool(&shared->mutexes.dead, &shared->dead);
 	return (NULL);
@@ -225,5 +230,5 @@ void	philo(char **argv)
 		return ;
 	if (start_diner(&shared) == ERROR)
 		return ;
-	destroy_mutexes();
+	destroy_mutexes(&shared.mutexes, shared.count, 4);
 }

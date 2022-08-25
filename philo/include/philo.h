@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/25 16:59:44 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/25 18:12:54 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define PHILO_H
 
 # define MAX_PHILOSOPHERS 200
+# define MAX_TIM 60
 # define ERROR -1
 # define DEAD 1
 # define ALIVE 0
