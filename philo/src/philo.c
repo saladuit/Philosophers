@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/25 17:11:52 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/25 17:57:57 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,7 +144,7 @@ int32_t	init_mutexes(t_mutexes	*mutexes, int32_t count)
 	while (i < count)
 	{
 		if (pthread_mutex_init(&mutexes->forks[i], NULL))
-			return (destroy_mutexes(mutexes, i, 2));
+			return (destroy_mutexes(mutexes, i, 4));
 		i++;
 	}
 	return (SUCCESS);
@@ -225,4 +225,5 @@ void	philo(char **argv)
 		return ;
 	if (start_diner(&shared) == ERROR)
 		return ;
+	destroy_mutexes();
 }
