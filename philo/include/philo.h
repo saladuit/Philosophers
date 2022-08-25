@@ -6,13 +6,17 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/25 11:02:20 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/25 16:11:21 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
+
 # define MAX_PHILOSOPHERS 200
+# define ERROR -1
+# define DEAD 1
+# define ALIVE 0
 
 # include <stdbool.h>
 # include <stdint.h>
@@ -81,15 +85,23 @@ typedef	struct s_philo
 	int32_t	right_fork;
 }	t_philo;
 
+typedef struct s_mutexes
+{
+	pthread_mutex_t		*forks[MAX_PHILOSOPHERS];
+	pthread_mutex_t		*voice;
+	pthread_mutex_t		*id_lock;
+	pthread_mutex_t		*dead_lock;
+}	t_mutexes;
+
 typedef struct s_shared
 {	
-	int32_t				id;
-	int32_t				count;
-	t_philo				settings[MAX_PHILOSOPHERS];
-	pthread_mutex_t		forks[MAX_PHILOSOPHERS];
-	pthread_t 			philosophers[MAX_PHILOSOPHERS];
-	pthread_mutex_t		voice;
-	pthread_mutex_t		id_lock;
+	int32_t		id;
+	int32_t		count;
+	bool		dead;
+	bool		start;
+	t_philo		settings[MAX_PHILOSOPHERS];
+	pthread_t	philosophers[MAX_PHILOSOPHERS];
+	t_mutexes	mutexes;
 }	t_shared;
 	
 void	philo(char **argv);
