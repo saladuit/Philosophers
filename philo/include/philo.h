@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/25 16:11:21 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/25 16:59:44 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,10 +87,11 @@ typedef	struct s_philo
 
 typedef struct s_mutexes
 {
-	pthread_mutex_t		*forks[MAX_PHILOSOPHERS];
-	pthread_mutex_t		*voice;
-	pthread_mutex_t		*id_lock;
-	pthread_mutex_t		*dead_lock;
+	pthread_mutex_t		forks[MAX_PHILOSOPHERS];
+	pthread_mutex_t		voice;
+	pthread_mutex_t		id;
+	pthread_mutex_t		dead;
+	pthread_mutex_t		start;
 }	t_mutexes;
 
 typedef struct s_shared
