@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/24 21:39:30 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/25 10:44:11 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,35 +55,35 @@ void	collect_forks(pthread_mutex_t	*forks, int32_t count)
 	}
 }
 
-void	fill_philo_array(t_philo *array, t_philo *settings, int32_t count)
+void	fill_settings(t_philo *settings, t_philo *standard, int32_t count)
 {
 	int32_t		i;
 
 	i = 0;
 	while (i < count)
 	{
-		*array = *settings;
-		array->left_fork = i;
-		array->right_fork = (i + 1) % count;
+		*settings = *standard;
+		settings->left_fork = i;
+		settings->right_fork = (i + 1) % count;
 		i++;
-		array++;
+		settings++;
 	}
 }
 
-int32_t	init_philosophers(t_philo *array, char **argv)
+int32_t	init_philosophers(t_philo *settings, char **argv)
 {
-	t_philo settings;
+	t_philo standard;
 	int32_t	count;
 
 	count = ft_atoi(argv[1]);
-	construct_settings(&settings, argv);
-	fill_philo_array(array, &settings, count);
+	construct_settings(&standard, argv);
+	fill_settings(settings, &standard, count);
 	return (count);
 }
 
 void	init(t_shared *shared, char **argv)
 {
-	shared->count = init_philosophers(shared->array, argv);
+	shared->count = init_philosophers(shared->settings, argv);
 	collect_forks(shared->forks, shared->count);
 	pthread_mutex_init(&shared->id_lock, NULL);
 }
@@ -103,6 +103,7 @@ void	join_thread(pthread_t *thread)
 	if (pthread_join(*thread, NULL))
 		exit(-1);
 }
+
 void	start_eating_spaghetti(t_shared *shared)
 {
 	int32_t	i;

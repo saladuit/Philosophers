@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/24 20:58:42 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/25 10:51:17 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,9 @@ typedef enum e_message
 
 typedef	struct s_philo
 {
-	int32_t time_die;
-	int32_t time_eat;
-	int32_t time_sleep;
+	time_t time_die;
+	time_t time_eat;
+	time_t time_sleep;
 	int16_t eat_count;
 	int16_t left_fork;
 	int16_t right_fork;
@@ -85,7 +85,7 @@ typedef struct s_shared
 {	
 	int16_t				id;
 	int16_t				count;
-	t_philo				array[MAX_PHILOSOPHERS];
+	t_philo				settings[MAX_PHILOSOPHERS];
 	pthread_mutex_t		forks[MAX_PHILOSOPHERS];
 	pthread_t 			philosophers[MAX_PHILOSOPHERS];
 	pthread_mutex_t		voice;
