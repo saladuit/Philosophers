@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/25 18:28:57 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/27 14:00:02 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,18 @@ bool	ft_check_shared_bool(pthread_mutex_t *mutex, bool *input)
 	return (false);
 }
 
+int64_t	timeInMilliseconds(void) {
+    t_timeval tv;
+
+    gettimeofday(&tv,NULL);
+    return ((tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
+}
+
+int64_t	timedifference(t_timeval start, t_timeval end)
+{
+    return ((end.tv_sec - start.tv_sec) * 1000) + ((end.tv_usec - start.tv_usec) / 1000);
+}
+
 void	ft_switch_shared_bool(pthread_mutex_t *mutex, bool *input)
 {
 	pthread_mutex_lock(mutex);
@@ -39,10 +51,6 @@ void	take_fork(pthread_mutex_t *fork, time_t time, int32_t id)
 {
 	pthread_mutex_lock(fork);
 	printf("%ld %d has taken a fork\n", time, id);
-}
-
-void	put_down_fork(pthread_mutex_t *fork)
-{
 	pthread_mutex_unlock(fork);
 }
 
@@ -57,21 +65,19 @@ int16_t	get_id(pthread_mutex_t *id_lock, int32_t *shared_id)
 	pthread_mutex_unlock(id_lock);
 	return (id);
 }
-
+void	shared_printf(pthread_mutex_t *voice, void (*f)(void *))
+{
+}
 void	*philosopher(void *p) {
 	t_shared	*shared;
 	int16_t		id;
-	struct timeval time;
-	time_t	milsec;
+	t_timeval start;
 
 	shared = (t_shared *)p;
 	while (!ft_check_shared_bool(&shared->mutexes.start, &shared->start))
 		continue ;
-	gettimeofday(&time, NULL);
-	milsec = time.tv_sec;
-	printf("%ld\n", milsec);
 	id = get_id(&shared->mutexes.id, &shared->id);
-	ft_switch_shared_bool(&shared->mutexes.dead, &shared->dead);
+	take_forks(&shared->mutexes, );
 	return (NULL);
 }
 
@@ -125,6 +131,8 @@ int32_t	destroy_mutexes(t_mutexes *mutexes, int32_t count, int32_t lvl)
 		pthread_mutex_destroy(&mutexes->dead);
 	if (lvl <= 4)
 		pthread_mutex_destroy(&mutexes->start);
+	if (lvl <= 5)
+		pthread_mutex_destroy(&mutexes->start);
 	while (i < count)
 	{
 		pthread_mutex_destroy(&mutexes->forks[i]);
@@ -146,10 +154,12 @@ int32_t	init_mutexes(t_mutexes	*mutexes, int32_t count)
 			return (destroy_mutexes(mutexes, i, 3));
 	if (pthread_mutex_init(&mutexes->start, NULL))
 			return (destroy_mutexes(mutexes, i, 4));
+	if (pthread_mutex_init(&mutexes->grab, NULL))
+			return (destroy_mutexes(mutexes, i, 5));
 	while (i < count)
 	{
 		if (pthread_mutex_init(&mutexes->forks[i], NULL))
-			return (destroy_mutexes(mutexes, i, 4));
+			return (destroy_mutexes(mutexes, i, 5));
 		i++;
 	}
 	return (SUCCESS);
@@ -230,5 +240,5 @@ void	philo(char **argv)
 		return ;
 	if (start_diner(&shared) == ERROR)
 		return ;
-	destroy_mutexes(&shared.mutexes, shared.count, 4);
+	destroy_mutexes(&shared.mutexes, shared.count, 5);
 }

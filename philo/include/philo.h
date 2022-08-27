@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/25 18:12:54 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/27 13:56:58 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,12 @@
 # define ERROR -1
 # define DEAD 1
 # define ALIVE 0
+
+# define TOOK_FORK "has taken a fork\n"
+# define EATING "is eating"
+# define SLEEPING "is sleeping"
+# define THINKING "is thinking"
+# define DIED "died"
 
 # include <stdbool.h>
 # include <stdint.h>
@@ -68,6 +74,7 @@
 
 # include <libft.h>
 
+typedef struct timeval t_timeval;
 
 typedef enum e_message
 {
@@ -93,6 +100,7 @@ typedef struct s_mutexes
 	pthread_mutex_t		id;
 	pthread_mutex_t		dead;
 	pthread_mutex_t		start;
+	pthread_mutex_t		grab;
 }	t_mutexes;
 
 typedef struct s_shared
