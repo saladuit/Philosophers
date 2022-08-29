@@ -6,13 +6,13 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/27 14:00:02 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/29 21:02:40 by saladuit     \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-bool	ft_check_shared_bool(pthread_mutex_t *mutex, bool *input)
+bool	ft_check_shared_bool(t_mutex *mutex, bool *input)
 {
 	bool result;
 
@@ -37,7 +37,7 @@ int64_t	timedifference(t_timeval start, t_timeval end)
     return ((end.tv_sec - start.tv_sec) * 1000) + ((end.tv_usec - start.tv_usec) / 1000);
 }
 
-void	ft_switch_shared_bool(pthread_mutex_t *mutex, bool *input)
+void	ft_switch_shared_bool(t_mutex *mutex, bool *input)
 {
 	pthread_mutex_lock(mutex);
 	if (*input == true)
@@ -47,14 +47,14 @@ void	ft_switch_shared_bool(pthread_mutex_t *mutex, bool *input)
 	pthread_mutex_unlock(mutex);
 }
 
-void	take_fork(pthread_mutex_t *fork, time_t time, int32_t id)
+void	take_fork(t_mutex *fork, time_t time, int32_t id)
 {
 	pthread_mutex_lock(fork);
 	printf("%ld %d has taken a fork\n", time, id);
 	pthread_mutex_unlock(fork);
 }
 
-int16_t	get_id(pthread_mutex_t *id_lock, int32_t *shared_id)
+int16_t	get_id(t_mutex *id_lock, int32_t *shared_id)
 {
 	int16_t	id;
 
@@ -65,8 +65,21 @@ int16_t	get_id(pthread_mutex_t *id_lock, int32_t *shared_id)
 	pthread_mutex_unlock(id_lock);
 	return (id);
 }
-void	shared_printf(pthread_mutex_t *voice, void (*f)(void *))
+
+int32_t	mutex_api(t_mutex *mutex, int32_t (*f) (void *), void *data)
 {
+	int32_t	result;
+
+	pthread_mutex_lock(mutex);
+	result = f(data);
+	pthread_mutex_unlock(mutex);
+	return (result);
+}
+
+void	take_forks(t_shared *shared)
+{
+	t_shared *p
+	take_fork(shared->mutexes->forks
 }
 void	*philosopher(void *p) {
 	t_shared	*shared;
@@ -77,7 +90,7 @@ void	*philosopher(void *p) {
 	while (!ft_check_shared_bool(&shared->mutexes.start, &shared->start))
 		continue ;
 	id = get_id(&shared->mutexes.id, &shared->id);
-	take_forks(&shared->mutexes, );
+	take_forks(&shared);
 	return (NULL);
 }
 

@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/27 13:56:58 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/29 20:52:28 by saladuit     \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@
 # include <libft.h>
 
 typedef struct timeval t_timeval;
+typedef pthread_mutex_t t_mutex;
 
 typedef enum e_message
 {
@@ -95,12 +96,12 @@ typedef	struct s_philo
 
 typedef struct s_mutexes
 {
-	pthread_mutex_t		forks[MAX_PHILOSOPHERS];
-	pthread_mutex_t		voice;
-	pthread_mutex_t		id;
-	pthread_mutex_t		dead;
-	pthread_mutex_t		start;
-	pthread_mutex_t		grab;
+	t_mutex		forks[MAX_PHILOSOPHERS];
+	t_mutex		voice;
+	t_mutex		id;
+	t_mutex		dead;
+	t_mutex		start;
+	t_mutex		grab;
 }	t_mutexes;
 
 typedef struct s_shared
