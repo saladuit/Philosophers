@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/29 20:52:28 by saladuit     \___)=(___/                 */
+/*   Updated: 2022/08/30 14:15:59 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,6 +114,9 @@ typedef struct s_shared
 	pthread_t	philosophers[MAX_PHILOSOPHERS];
 	t_mutexes	mutexes;
 }	t_shared;
-	
+
+//init
+int32_t	breed_philosophers(t_shared *shared);
+
 void	philo(char **argv);
 #endif
