@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/30 14:21:54 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/30 18:23:40 by saladuit     \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,8 @@ void	take_forks(t_shared *shared)
 	take_fork(shared->mutexes->forks);
 }
 
-void	*philosopher(void *p) {
+void	*philosopher(void *p)
+{
 	t_shared	*shared;
 	int16_t		id;
 	t_timeval start;
