@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/30 14:15:59 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/30 18:29:01 by saladuit     \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,7 +116,19 @@ typedef struct s_shared
 }	t_shared;
 
 //init
+int32_t	init_settings(t_philo *settings, char **argv);
+void	fill_settings(t_philo *settings, t_philo *standard, int32_t count);
+void	construct_settings(t_philo *settings, char **argv);
+//mutex
+int32_t	init_mutexes(t_mutexes	*mutexes, int32_t count);
+int32_t	destroy_mutexes(t_mutexes *mutexes, int32_t count, int32_t lvl);
+//thread
+int32_t	make_thread(void *(*routine)(void *), void *shared, pthread_t *thread);
+int32_t	start_diner(t_shared *shared);
+int32_t	clean_table(pthread_t *philosophers, int32_t count);
+int32_t	join_thread(pthread_t *thread);
 int32_t	breed_philosophers(t_shared *shared);
-
+//routine
+//start
 void	philo(char **argv);
 #endif

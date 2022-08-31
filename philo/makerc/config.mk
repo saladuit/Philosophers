@@ -6,12 +6,12 @@
 #    By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /    #
 #                                                  (|     | )|_| |_| |>  <     #
 #    Created: 2022/07/16 21:50:54 by safoh        /'\_   _/`\__|\__,_/_/\_\    #
-#    Updated: 2022/08/23 14:58:56 by safoh        \___)=(___/                  #
+#    Updated: 2022/08/30 18:19:50 by saladuit     \___)=(___/                  #
 #                                                                              #
 # **************************************************************************** #
 
 
-SRCS			=philo.c
+SRCS			=philo.c init.c mutex.c thread.c
 MAIN 			:=main.c
 
 SRC_DIR			:=src
