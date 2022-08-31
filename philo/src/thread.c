@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/31 18:48:29 by saladuit     \___)=(___/                 */
+/*   Updated: 2022/08/31 19:04:53 by saladuit     \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,16 +35,15 @@ int32_t	join_thread(pthread_t *thread)
 
 int32_t	clean_table(pthread_t *philosophers, int32_t count)
 {
-	int	i;
+	int32_t	i;
 
 	i = 0;
 	while (i < count)
 	{
-		if (pthread_detach(philosophers[i]))
-			return (ERROR);
+		pthread_detach(philosophers[i]);
 		i++;	
 	}
-	return (SUCCESS);
+	return (ERROR);
 }
 
 int32_t	start_diner(t_shared *shared)
@@ -52,7 +51,6 @@ int32_t	start_diner(t_shared *shared)
 	int32_t	i;
 
 	i = 0;
-	mutex_api(&shared->mutexes.start, NULL, NULL);
 	while (i < shared->count)
 	{
 		if (join_thread(&shared->philosophers[i]) == ERROR)
@@ -78,7 +76,7 @@ int32_t	breed_philosophers(t_shared *shared)
 	i = 0;
 	while (i < shared->count)
 	{
-		if (make_thread(philosopher, shared, &shared->philosophers[i]) == ERROR)
+		if (i == 4 || make_thread(philosopher, shared, &shared->philosophers[i]) == ERROR)
 			return (clean_table(shared->philosophers, i));
 		i++;
 	}
