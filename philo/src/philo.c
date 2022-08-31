@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/31 15:17:49 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/31 18:54:15 by saladuit     \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,12 +53,12 @@ int32_t	can_i_eat(t_shared *shared)
 void	*philosopher(void *p)
 {
 	t_shared	*shared;
-	int16_t		id;
+	int32_t		id;
 
 	shared = (t_shared *)p;
-	while (!mutex_api(&shared->mutexes.start, can_i_eat, shared))
-		continue ;
+	mutex_api(&shared->mutexes.start, NULL, NULL);
 	id = mutex_api(&shared->mutexes.id, get_id, shared);
+	(void)id;
 	return (NULL);
 }
 
@@ -70,8 +70,10 @@ int32_t	philo(char **argv)
 		return (ERROR);
 	if (init_mutexes(&shared.mutexes, shared.count) == ERROR)
 		return (ERROR);
+	pthread_mutex_lock(&shared.mutexes.start);
 	if (breed_philosophers(&shared) == ERROR)
 		return (ERROR);
+	pthread_mutex_unlock(&shared.mutexes.start);
 	if (start_diner(&shared) == ERROR)
 		return (ERROR);
 	destroy_mutexes(&shared.mutexes, shared.count, 4);
