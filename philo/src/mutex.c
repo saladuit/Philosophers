@@ -6,11 +6,21 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:09:26 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/30 14:17:31 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/31 10:58:03 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
+
+int32_t	mutex_api(t_mutex *mutex, int32_t (*f) (t_shared *), t_shared *shared)
+{
+	int32_t	result;
+
+	pthread_mutex_lock(mutex);
+	result = f(shared);
+	pthread_mutex_unlock(mutex);
+	return (result);
+}
 
 int32_t	init_mutexes(t_mutexes	*mutexes, int32_t count)
 {

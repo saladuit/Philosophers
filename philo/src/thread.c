@@ -6,11 +6,25 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/30 14:26:08 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/31 11:01:55 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
+
+void	ft_switch_bool(bool *input)
+{
+	if (*input == true)
+		*input = false;
+	else
+		*input = true;
+}
+
+int32_t	breeding_done(t_shared *shared)
+{
+	ft_switch_bool(&shared->start);
+	return (0);
+}
 
 int32_t	join_thread(pthread_t *thread)
 {
@@ -30,7 +44,7 @@ int32_t	clean_table(pthread_t *philosophers, int32_t count)
 			return (ERROR);
 		i++;	
 	}
-	return (SUCCES);
+	return (SUCCESS);
 }
 
 int32_t	start_diner(t_shared *shared)
@@ -38,7 +52,7 @@ int32_t	start_diner(t_shared *shared)
 	int32_t	i;
 
 	i = 0;
-	ft_switch_shared_bool(&shared->mutexes.start, &shared->start);
+	mutex_api(&shared->mutexes.start, breeding_done, shared);
 	while (i < shared->count)
 	{
 		if (join_thread(&shared->philosophers[i]) == ERROR)

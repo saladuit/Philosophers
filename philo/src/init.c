@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:03:41 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/30 14:29:37 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/31 10:37:45 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,16 +21,6 @@ void	construct_settings(t_philo *settings, char **argv)
 		settings->eat_count = ft_atoi(argv[5]);
 	else
 		settings->eat_count = -1;
-	if (settings->time_die == 0 && !ft_strcmp(argv[2], "0"))
-		return (ERROR);
-	if (settings->time_die == 0 && !ft_strcmp(argv[2], "0"))
-		return (ERROR);
-	if (settings->time_die == 0 && !ft_strcmp(argv[2], "0"))
-		return (ERROR);
-	if (settings->time_die == 0 && !ft_strcmp(argv[2], "0"))
-		return (ERROR);
-	if (settings->time_die == 0 && !ft_strcmp(argv[2], "0"))
-		return (ERROR);
 }
 
 void	fill_settings(t_philo *settings, t_philo *standard, int32_t count)
