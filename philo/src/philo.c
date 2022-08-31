@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/31 11:19:07 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/31 15:17:49 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,9 +47,7 @@ int32_t	get_id(t_shared *shared)
 
 int32_t	can_i_eat(t_shared *shared)
 {
-	if (shared->start == true)
-		return (true);
-	return (false);
+	return (shared->start);
 }
 
 void	*philosopher(void *p)
