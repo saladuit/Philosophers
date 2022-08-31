@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/31 11:01:30 by safoh        \___)=(___/                 */
+/*   Updated: 2022/08/31 11:20:06 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -116,9 +116,9 @@ typedef struct s_shared
 }	t_shared;
 
 //init
-int32_t	init_settings(t_philo *settings, char **argv);
+int32_t	init_settings(int32_t *count, t_philo *settings, char **argv);
 void	fill_settings(t_philo *settings, t_philo *standard, int32_t count);
-void	construct_settings(t_philo *settings, char **argv);
+int32_t	construct_settings(t_philo *settings, char **argv);
 //mutex
 int32_t	init_mutexes(t_mutexes	*mutexes, int32_t count);
 int32_t	destroy_mutexes(t_mutexes *mutexes, int32_t count, int32_t lvl);
