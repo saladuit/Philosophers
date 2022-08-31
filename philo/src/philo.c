@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/31 18:54:15 by saladuit     \___)=(___/                 */
+/*   Updated: 2022/08/31 19:07:43 by saladuit     \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,10 +70,8 @@ int32_t	philo(char **argv)
 		return (ERROR);
 	if (init_mutexes(&shared.mutexes, shared.count) == ERROR)
 		return (ERROR);
-	pthread_mutex_lock(&shared.mutexes.start);
-	if (breed_philosophers(&shared) == ERROR)
+	if (mutex_api(&shared.mutexes.start, breed_philosophers, &shared) == ERROR)
 		return (ERROR);
-	pthread_mutex_unlock(&shared.mutexes.start);
 	if (start_diner(&shared) == ERROR)
 		return (ERROR);
 	destroy_mutexes(&shared.mutexes, shared.count, 4);
