@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/31 11:20:06 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 20:48:15 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,10 @@
 # define PHILO_H
 
 # define MAX_PHILOSOPHERS 200
-# define MAX_TIM 60
+# define MAX_FORKS MAX_PHILOSOPHERS
+# define MIN_TIME 60
 # define ERROR -1
-# define DEAD 1
-# define ALIVE 0
+# define EXTRA_MUTEXES 8
 
 # define TOOK_FORK "has taken a fork\n"
 # define EATING "is eating"
@@ -84,6 +84,18 @@ typedef enum e_message
 	MALLOC,
 }	t_message;
 
+typedef enum e_mutexindex
+{
+	VOICE,
+	DEAD,
+	START,
+	ID,
+	TAKE,
+	EAT,
+	SLEEP,
+	THINK,
+}	t_mutexindex;
+
 typedef	struct s_philo
 {
 	time_t	time_die;
@@ -94,16 +106,6 @@ typedef	struct s_philo
 	int32_t	right_fork;
 }	t_philo;
 
-typedef struct s_mutexes
-{
-	t_mutex		forks[MAX_PHILOSOPHERS];
-	t_mutex		voice;
-	t_mutex		id;
-	t_mutex		dead;
-	t_mutex		start;
-	t_mutex		grab;
-}	t_mutexes;
-
 typedef struct s_shared
 {	
 	int32_t		id;
@@ -112,7 +114,7 @@ typedef struct s_shared
 	bool		start;
 	t_philo		settings[MAX_PHILOSOPHERS];
 	pthread_t	philosophers[MAX_PHILOSOPHERS];
-	t_mutexes	mutexes;
+	t_mutex		mutexes[EXTRA_MUTEXES + MAX_FORKS];
 }	t_shared;
 
 //init
@@ -120,8 +122,8 @@ int32_t	init_settings(int32_t *count, t_philo *settings, char **argv);
 void	fill_settings(t_philo *settings, t_philo *standard, int32_t count);
 int32_t	construct_settings(t_philo *settings, char **argv);
 //mutex
-int32_t	init_mutexes(t_mutexes	*mutexes, int32_t count);
-int32_t	destroy_mutexes(t_mutexes *mutexes, int32_t count, int32_t lvl);
+int32_t	init_mutexes(t_mutex	*mutexes, int32_t count);
+int32_t	destroy_mutexes(t_mutex *mutexes, int32_t count);
 int32_t	mutex_api(t_mutex *mutex, int32_t (*f) (t_shared *), t_shared *shared);
 //thread
 int32_t	make_thread(void *(*routine)(void *), void *shared, pthread_t *thread);

@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 20:12:31 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 20:53:10 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ int32_t	pthread_create_failed(pthread_t *philosophers, int32_t count)
 	return (ERROR);
 }
 
-int32_t	start_diner(t_shared *shared)
+int32_t	join_threads(t_shared *shared)
 {
 	int32_t	i;
 
@@ -84,6 +84,8 @@ int32_t	breed_philosophers(t_shared *shared)
 	}
 	shared->start = true;
 	if (pthread_mutex_unlock(&shared->mutexes.start))
+		return (ERROR);
+	if (join_threads(shared) == ERROR)
 		return (ERROR);
 	return (SUCCESS);
 }

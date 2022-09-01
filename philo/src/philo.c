@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 20:28:29 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 20:53:48 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,11 @@ int32_t	canstart(t_shared *shared)
 
 void	feast(t_shared *shared)
 {
+	(void)shared;
 	while (1)
 	{
-
+//		if (mutex_api(&shared->mutexes[VOICE], iseating, shared))
+			return ;
 	}
 }
 
@@ -72,9 +74,9 @@ void	*philosopher(void *p)
 	shared = (t_shared *)p;
 	while (1)
 	{
-		if (mutex_api(&shared->mutexes.start, isdead, shared))
+		if (mutex_api(&shared->mutexes[START], isdead, shared))
 			return (NULL);
-		start = mutex_api(&shared->mutexes.start, canstart, shared);
+		start = mutex_api(&shared->mutexes[START], canstart, shared);
 		if (start == ERROR)
 			return (NULL);
 		if (start == true)
@@ -84,7 +86,7 @@ void	*philosopher(void *p)
 //	if (id == ERROR)
 //		return (NULL);
 //	(void)id;
-	feast(shared);
+	//feast(shared);
 	return (NULL);
 }
 
@@ -95,12 +97,10 @@ int32_t	philo(char **argv)
 	ft_bzero(&shared, sizeof(t_shared));
 	if (init_settings(&shared.count, shared.settings, argv) == ERROR)
 		return (ERROR);
-	if (init_mutexes(&shared.mutexes, shared.count) == ERROR)
-		return (destroy_mutexes(&shared.mutexes, shared.count, 4));
+	if (init_mutexes(shared.mutexes, shared.count + EXTRA_MUTEXES) == ERROR)
+		return (destroy_mutexes(shared.mutexes, shared.count + EXTRA_MUTEXES));
 	if (breed_philosophers(&shared) == ERROR)
-		return (destroy_mutexes(&shared.mutexes, shared.count, 4));
-	if (start_diner(&shared) == ERROR)
-		return (destroy_mutexes(&shared.mutexes, shared.count, 4));
-	destroy_mutexes(&shared.mutexes, shared.count, 4);
+		return (destroy_mutexes(shared.mutexes, shared.count + EXTRA_MUTEXES));
+	destroy_mutexes(shared.mutexes, shared.count + EXTRA_MUTEXES);
 	return (SUCCESS);
 }
