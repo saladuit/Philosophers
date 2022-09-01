@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:09:26 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 18:05:17 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 19:19:24 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,7 @@ int32_t	mutex_api(t_mutex *mutex, int32_t (*f) (t_shared *), t_shared *shared)
 
 	if (pthread_mutex_lock(mutex))
 		return (ERROR);
-	if (f)
-		result = f(shared);
-	else
-		result = 0;
+	result = f(shared);
 	if (pthread_mutex_unlock(mutex))
 		return (ERROR);
 	return (result);

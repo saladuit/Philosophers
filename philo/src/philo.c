@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 19:00:03 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 19:19:35 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,22 +57,24 @@ int32_t	canstart(t_shared *shared)
 void	*philosopher(void *p)
 {
 	t_shared	*shared;
-	int32_t		id;
+	int32_t		start;
+//	int32_t		id;
 
 	shared = (t_shared *)p;
-	if (mutex_api(&shared->mutexes.start, NULL, NULL) == ERROR)
-		return (NULL);
 	while (1)
 	{
 		if (mutex_api(&shared->mutexes.start, isdead, shared))
 			return (NULL);
-		if (mutex_api(&shared->mutexes.start, canstart, shared))
+		start = mutex_api(&shared->mutexes.start, canstart, shared);
+		if (start == ERROR)
+			return (NULL);
+		if (start == true)
 			break ;
 	}
-	id = mutex_api(&shared->mutexes.id, get_id, shared);
-	if (id == ERROR)
-		return (NULL);
-	(void)id;
+//	id = mutex_api(&shared->mutexes.id, get_id, shared);
+//	if (id == ERROR)
+//		return (NULL);
+//	(void)id;
 	return (NULL);
 }
 
@@ -80,6 +82,7 @@ int32_t	philo(char **argv)
 {
 	t_shared	shared;
 
+	ft_bzero(&shared, sizeof(t_shared));
 	if (init_settings(&shared.count, shared.settings, argv) == ERROR)
 		return (ERROR);
 	if (init_mutexes(&shared.mutexes, shared.count) == ERROR)
