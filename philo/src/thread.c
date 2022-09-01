@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 19:04:37 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 20:12:31 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int32_t	join_thread(pthread_t *thread)
 	return (SUCCESS);
 }
 
-int32_t	pthread_failed(pthread_t *philosophers, int32_t count)
+int32_t	pthread_create_failed(pthread_t *philosophers, int32_t count)
 {
 	int32_t	i;
 
@@ -58,7 +58,6 @@ int32_t	start_diner(t_shared *shared)
 int32_t	make_thread(void *(*routine)(void *), void *shared, pthread_t *thread)
 {
 
-//	*thread = 0;
 	if (pthread_create(thread, NULL, routine, shared))
 		return (ERROR);
 	return (SUCCESS);
@@ -78,8 +77,8 @@ int32_t	breed_philosophers(t_shared *shared)
 		{
 			shared->dead = true;
 			if (pthread_mutex_unlock(&shared->mutexes.start))
-				return (pthread_failed(shared->philosophers, i));
-			return (pthread_failed(shared->philosophers, i));
+				return (pthread_create_failed(shared->philosophers, i));
+			return (pthread_create_failed(shared->philosophers, i));
 		}
 		i++;
 	}

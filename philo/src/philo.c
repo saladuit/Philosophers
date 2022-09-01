@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 19:19:35 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 20:28:29 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,6 +54,15 @@ int32_t	canstart(t_shared *shared)
 {
 	return (shared->start);
 }
+
+void	feast(t_shared *shared)
+{
+	while (1)
+	{
+
+	}
+}
+
 void	*philosopher(void *p)
 {
 	t_shared	*shared;
@@ -75,6 +84,7 @@ void	*philosopher(void *p)
 //	if (id == ERROR)
 //		return (NULL);
 //	(void)id;
+	feast(shared);
 	return (NULL);
 }
 

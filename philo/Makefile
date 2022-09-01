@@ -6,7 +6,7 @@
 #    By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /    #
 #                                                  (|     | )|_| |_| |>  <     #
 #    Created: 2022/07/07 17:49:38 by safoh        /'\_   _/`\__|\__,_/_/\_\    #
-#    Updated: 2022/09/01 18:13:52 by safoh        \___)=(___/                  #
+#    Updated: 2022/09/01 20:22:42 by safoh        \___)=(___/                  #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ NAME			:=philo
 
 CC				:=gcc
 RM				:=rm -rfv
-CFLAGS			=-Wall -Wextra -Werror -lpthread$(if $(FSAN), -g -fsanitize=thread)$(if $(DEBUG), -g)
+CFLAGS			=-Wall -Wextra -Werror$(if $(FSAN), -g -fsanitize=thread)$(if $(DEBUG), -g)
 
 ################################################################################
 all: $(NAME)
