@@ -6,20 +6,20 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:09:26 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 20:44:21 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 21:20:22 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 #include <assert.h>
 
-int32_t	mutex_api(t_mutex *mutex, int32_t (*f) (t_shared *), t_shared *shared)
+int32_t	mutex_api(t_mutex *mutex, int32_t (*func) (void *), void *ptr)
 {
 	int32_t	result;
 
 	if (pthread_mutex_lock(mutex))
 		return (ERROR);
-	result = f(shared);
+	result = func(ptr);
 	if (pthread_mutex_unlock(mutex))
 		return (ERROR);
 	return (result);

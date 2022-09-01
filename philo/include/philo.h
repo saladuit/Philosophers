@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 20:48:15 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 22:06:23 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 # define ERROR -1
 # define EXTRA_MUTEXES 8
 
-# define TOOK_FORK "has taken a fork\n"
+# define TOOK_FORK "has taken a fork"
 # define EATING "is eating"
 # define SLEEPING "is sleeping"
 # define THINKING "is thinking"
@@ -98,9 +98,12 @@ typedef enum e_mutexindex
 
 typedef	struct s_philo
 {
-	time_t	time_die;
-	time_t	time_eat;
-	time_t	time_sleep;
+	int32_t id;
+	int64_t	start_time;
+	int64_t	last_eaten;
+	int64_t	time_die;
+	int64_t	time_eat;
+	int64_t	time_sleep;
 	int32_t	eat_count;
 	int32_t	left_fork;
 	int32_t	right_fork;
@@ -124,12 +127,13 @@ int32_t	construct_settings(t_philo *settings, char **argv);
 //mutex
 int32_t	init_mutexes(t_mutex	*mutexes, int32_t count);
 int32_t	destroy_mutexes(t_mutex *mutexes, int32_t count);
-int32_t	mutex_api(t_mutex *mutex, int32_t (*f) (t_shared *), t_shared *shared);
+int32_t	mutex_api(t_mutex *mutex, int32_t (*func) (void *), void *ptr);
 //thread
 int32_t	make_thread(void *(*routine)(void *), void *shared, pthread_t *thread);
 int32_t	start_diner(t_shared *shared);
 int32_t	clean_table(pthread_t *philosophers, int32_t count);
 int32_t	join_thread(pthread_t *thread);
+int32_t	clean_philosophers(t_shared *shared);
 int32_t	breed_philosophers(t_shared *shared);
 //routine
 void	*philosopher(void *p);
