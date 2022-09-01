@@ -6,7 +6,7 @@
 #    By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /    #
 #                                                  (|     | )|_| |_| |>  <     #
 #    Created: 2022/02/09 17:06:29 by safoh        /'\_   _/`\__|\__,_/_/\_\    #
-#    Updated: 2022/08/25 15:38:49 by safoh        \___)=(___/                  #
+#    Updated: 2022/09/01 17:57:50 by safoh        \___)=(___/                  #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,7 +18,7 @@ NAME			=libft.a
 
 CC				:=gcc
 RM				:=rm -rf
-CFLAGS			=-Wall -Wextra -Werror$(if $(DEBUG), -g -fsanitize=thread)$(if $(MALLOC), -g)
+CFLAGS			=-Wall -Wextra -Werror$(if $(FSAN), -g -fsanitize=thread)$(if $(DEBUG), -g)
 
 SRC_DIR 		:=./src
 BUILD_DIR		:=./build
@@ -52,5 +52,13 @@ re: all
 debug:
 	@$(MAKE) DEBUG=1
 
+rebug: fclean
+	@$(MAKE) debug
+
+fsan:
+	@$(MAKE) FSAN=1
+
+resan: fclean
+	@$(MAKE) fsan
 .PHONY: all clean fclean re debug
 ################################################################################

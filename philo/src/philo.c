@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 16:25:25 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 19:00:03 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,10 @@ int32_t	isdead(t_shared *shared)
 	return (shared->dead);
 }
 
+int32_t	canstart(t_shared *shared)
+{
+	return (shared->start);
+}
 void	*philosopher(void *p)
 {
 	t_shared	*shared;
@@ -58,8 +62,13 @@ void	*philosopher(void *p)
 	shared = (t_shared *)p;
 	if (mutex_api(&shared->mutexes.start, NULL, NULL) == ERROR)
 		return (NULL);
-	if (mutex_api(&shared->mutexes.start, isdead, shared))
-		return (NULL);
+	while (1)
+	{
+		if (mutex_api(&shared->mutexes.start, isdead, shared))
+			return (NULL);
+		if (mutex_api(&shared->mutexes.start, canstart, shared))
+			break ;
+	}
 	id = mutex_api(&shared->mutexes.id, get_id, shared);
 	if (id == ERROR)
 		return (NULL);
@@ -75,7 +84,7 @@ int32_t	philo(char **argv)
 		return (ERROR);
 	if (init_mutexes(&shared.mutexes, shared.count) == ERROR)
 		return (destroy_mutexes(&shared.mutexes, shared.count, 4));
-	if (mutex_api(&shared.mutexes.start, breed_philosophers, &shared) == ERROR)
+	if (breed_philosophers(&shared) == ERROR)
 		return (destroy_mutexes(&shared.mutexes, shared.count, 4));
 	if (start_diner(&shared) == ERROR)
 		return (destroy_mutexes(&shared.mutexes, shared.count, 4));

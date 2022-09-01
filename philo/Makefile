@@ -6,7 +6,7 @@
 #    By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /    #
 #                                                  (|     | )|_| |_| |>  <     #
 #    Created: 2022/07/07 17:49:38 by safoh        /'\_   _/`\__|\__,_/_/\_\    #
-#    Updated: 2022/08/25 17:05:16 by safoh        \___)=(___/                  #
+#    Updated: 2022/09/01 18:13:52 by safoh        \___)=(___/                  #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,7 @@ NAME			:=philo
 
 CC				:=gcc
 RM				:=rm -rfv
-CFLAGS			=-Wall -Wextra -Werror$(if $(DEBUG), -g -fsanitize=thread)$(if $(MALLOC), -g)
+CFLAGS			=-Wall -Wextra -Werror -lpthread$(if $(FSAN), -g -fsanitize=thread)$(if $(DEBUG), -g)
 
 ################################################################################
 all: $(NAME)
@@ -56,16 +56,22 @@ debug:
 rebug: fclean
 	@$(MAKE) debug
 
+fsan:
+	@$(MAKE) FSAN=1
+
+resan: fclean
+	@$(MAKE) fsan
+
 re_malloc_test: fclean
 	@$(MAKE) malloc_test
 
 malloc_test: $(OBJS) $(MAIN_OBJ) $(LIBFT)
-	@$(MAKE) MALLOC=1
+	@$(MAKE) DEBUG=1
 	$(CC) $(CFLAGS) $^ -fsanitize=undefined -rdynamic -o $@ $(INCLUDE_FLAGS) -L../ft_mallocator -lmallocator
 
-valgrind: all ## Launch valgrind
+valgrind: debug ## Launch valgrind
 	valgrind --leak-check=full ./$(NAME)
 
-.PHONY: all clean fclean re debug rebug valgrind malloc_test re_malloc_test
+.PHONY: all clean fclean re debug rebug valgrind malloc_test re_malloc_test fsan resan
 
 ################################################################################

@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:09:26 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 16:17:08 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 18:05:17 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,13 @@ int32_t	destroy_mutexes(t_mutexes *mutexes, int32_t count, int32_t lvl)
 	int32_t	i;
 
 	i = 0;
-	if (lvl <= 1)
+	if (lvl >= 1)
 		pthread_mutex_destroy(&mutexes->voice);
-	if (lvl <= 2)
+	if (lvl >= 2)
 		pthread_mutex_destroy(&mutexes->id); //insert error message
-	if (lvl <= 3)
+	if (lvl >= 3)
 		pthread_mutex_destroy(&mutexes->dead);
-	if (lvl <= 4)
+	if (lvl >= 4)
 		pthread_mutex_destroy(&mutexes->start);
 	while (i < count)
 	{
