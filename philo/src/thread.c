@@ -6,11 +6,12 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/08/31 19:04:53 by saladuit     \___)=(___/                 */
+/*   Updated: 2022/09/01 16:07:27 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
+#include <assert.h>
 
 void	ft_switch_bool(bool *input)
 {
@@ -18,12 +19,6 @@ void	ft_switch_bool(bool *input)
 		*input = false;
 	else
 		*input = true;
-}
-
-int32_t	breeding_done(t_shared *shared)
-{
-	ft_switch_bool(&shared->start);
-	return (0);
 }
 
 int32_t	join_thread(pthread_t *thread)
@@ -40,7 +35,7 @@ int32_t	clean_table(pthread_t *philosophers, int32_t count)
 	i = 0;
 	while (i < count)
 	{
-		pthread_detach(philosophers[i]);
+		assert(pthread_detach(philosophers[i]) == 0);
 		i++;	
 	}
 	return (ERROR);
@@ -76,8 +71,11 @@ int32_t	breed_philosophers(t_shared *shared)
 	i = 0;
 	while (i < shared->count)
 	{
-		if (i == 4 || make_thread(philosopher, shared, &shared->philosophers[i]) == ERROR)
+		if (i == 199 || make_thread(philosopher, shared, &shared->philosophers[i]) == ERROR)
+		{
+			shared->dead = true;
 			return (clean_table(shared->philosophers, i));
+		}
 		i++;
 	}
 	return (SUCCESS);
