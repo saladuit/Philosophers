@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 16:07:27 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 16:10:10 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ int32_t	clean_table(pthread_t *philosophers, int32_t count)
 	i = 0;
 	while (i < count)
 	{
-		assert(pthread_detach(philosophers[i]) == 0);
+		pthread_detach(philosophers[i]);
 		i++;	
 	}
 	return (ERROR);
