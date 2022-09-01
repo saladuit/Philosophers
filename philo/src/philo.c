@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 15:58:49 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/01 16:25:25 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,12 +58,11 @@ void	*philosopher(void *p)
 	shared = (t_shared *)p;
 	if (mutex_api(&shared->mutexes.start, NULL, NULL) == ERROR)
 		return (NULL);
-	while (mutex_api(&shared->mutexes.start, isdead, shared))
-	{
-		id = mutex_api(&shared->mutexes.id, get_id, shared);
-		if (id == ERROR)
-			return (NULL);
-	}
+	if (mutex_api(&shared->mutexes.start, isdead, shared))
+		return (NULL);
+	id = mutex_api(&shared->mutexes.id, get_id, shared);
+	if (id == ERROR)
+		return (NULL);
 	(void)id;
 	return (NULL);
 }
