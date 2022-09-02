@@ -6,23 +6,23 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 22:09:31 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/02 17:39:04 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
 
-int64_t	timeInMilliseconds(void) {
+int64_t	time_in_ms(void) {
     t_timeval tv;
 
     gettimeofday(&tv,NULL);
     return ((tv.tv_sec) * 1000) + (tv.tv_usec / 1000);
 }
 
-int64_t	timedifference(t_timeval start, t_timeval end)
+int64_t	time_diff_ms(int64_t start, int64_t end)
 {
-    return ((end.tv_sec - start.tv_sec) * 1000) + ((end.tv_usec - start.tv_usec) / 1000);
+    return ((end - start) * 1000) + ((end - start) / 1000);
 }
 
 //void	take_fork(t_mutex *fork, time_t time, int32_t id)
@@ -65,25 +65,36 @@ void	narrator(int64_t time, int32_t id, char *str)
 
 int32_t	eat(void *ptr)
 {
-	narrator(timeInMilliseconds(), ((t_philo *)ptr)->id, EATING);
+	int32_t id;
+	int64_t	startms;
+
+	id = ((t_philo *)ptr)->id;
+	startms = ((t_philo *)ptr)->start_time;
+	narrator(time_diff_ms(startms, time_in_ms()), id, EATING);
+	((t_philo *)ptr)->eat_count--;
+	usleep(((t_philo *)ptr)->time_eat * 1000);
 	return (0);
 }
 
 int32_t died(void *ptr)
 {
-	narrator(timeInMilliseconds(), ((t_philo *)ptr)->id, DIED);
+	narrator(time_in_ms(), ((t_philo *)ptr)->id, DIED);
 	return (0);
 }
+
 void	start_feasting(t_shared *shared)
 {
 	int32_t	id;
 	id = mutex_api(&shared->mutexes[ID], get_id, shared);
 	if (id == ERROR)
 		return ;
+	shared->settings[id].start_time = shared->start_time;
 	while (1)
 	{
 		if (mutex_api(&shared->mutexes[VOICE], eat, &shared->settings[id]))
 			return ;
+		if (shared->settings[id].eat_count == 0)
+			break ;
 	}
 }
 
@@ -98,10 +109,10 @@ void	*philosopher(void *p)
 		if (mutex_api(&shared->mutexes[START], isdead, shared))
 			return (NULL);
 		start = mutex_api(&shared->mutexes[START], canstart, shared);
-		if (start == ERROR)
-			return (NULL);
 		if (start == true)
 			break ;
+		if (start == ERROR)
+			return (NULL);
 	}
 	start_feasting(shared);
 	return (NULL);

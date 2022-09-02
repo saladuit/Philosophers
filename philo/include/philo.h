@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 22:06:23 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/02 16:45:17 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,6 +115,7 @@ typedef struct s_shared
 	int32_t		count;
 	bool		dead;
 	bool		start;
+	int64_t		start_time;
 	t_philo		settings[MAX_PHILOSOPHERS];
 	pthread_t	philosophers[MAX_PHILOSOPHERS];
 	t_mutex		mutexes[EXTRA_MUTEXES + MAX_FORKS];
@@ -139,4 +140,6 @@ int32_t	breed_philosophers(t_shared *shared);
 void	*philosopher(void *p);
 //start
 int32_t	philo(char **argv);
+//utils
+int64_t	time_in_ms(void);
 #endif

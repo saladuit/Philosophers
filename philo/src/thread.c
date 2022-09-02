@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 22:06:04 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/02 16:31:18 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,7 @@ int32_t	breed_philosophers(t_shared *shared)
 		i++;
 	}
 	shared->start = true;
+	shared->start_time = time_in_ms();
 	if (pthread_mutex_unlock(&shared->mutexes[START]))
 		return (ERROR);
 	return (SUCCESS);
