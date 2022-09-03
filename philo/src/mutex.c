@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:09:26 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/01 21:20:22 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/03 18:43:46 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int32_t	mutex_api(t_mutex *mutex, int32_t (*func) (void *), void *ptr)
 	return (result);
 }
 
-int32_t	init_mutexes(t_mutex	*mutexes, int32_t count)
+int32_t	init_mutexes(t_mutex *mutexes, int32_t count)
 {
 	int32_t	i;
 

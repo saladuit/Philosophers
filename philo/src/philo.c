@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/03 18:37:44 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/03 19:11:38 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,27 +25,9 @@ int64_t	time_diff_ms(int64_t start, int64_t end)
     return ((end - start) * 1000) + ((end - start) / 1000);
 }
 
-//void	take_fork(t_mutex *fork, time_t time, int32_t id)
-//{
-//	pthread_mutex_lock(fork);
-//	printf("%ld %d has taken a fork\n", time, id);
-//	pthread_mutex_unlock(fork);
-//}
-//
-//void	take_forks(t_shared *shared)
-//{
-//	t_shared *p;
-//	take_fork(shared->mutexes.forks);
-//}
-
 int32_t	get_id(void *ptr)
 {
-	int32_t	id;
-	
-	((t_shared *)ptr)->id++;
-	id = ((t_shared *)ptr)->id;
-	((t_shared *)ptr)->settings[id - 1].id = id;
-	return (((t_shared *)ptr)->id);
+	return (((t_config *)ptr)->nb_philo--);
 }
 
 int32_t	isdead(void *ptr)
@@ -92,12 +74,8 @@ int32_t	check_eat_count(void *p)
 	return (SUCCESS);
 }
 
-void	start_feasting(t_shared *shared)
+void	start_feasting(t_shared *shared, t_philo *philo)
 {
-	int32_t	id;
-	id = mutex_api(&shared->mutexes[ID], get_id, shared);
-	if (id == ERROR)
-		return ;
 	shared->settings[id - 1].start_time = shared->start_time;
 	while (1)
 	{
@@ -128,12 +106,27 @@ int32_t	check_all_eat_count(void *p)
 	return (SUCCESS);
 }
 
+int32_t	construct_philo(t_shared *shared, t_philo *philo)
+{
+	int32_t	id;
+	philo->id = mutex_api(&shared->mutexes[ID], get_id, shared);
+	if (id == ERROR)
+		return (ERROR);
+	philo->last_time_eaten = 0;
+	philo->servings = 0;
+	philo->left_fork = &shared->mutexes[id - 1];
+	philo->right_fork = &shared->mutexes[id % shared->cnf.nb_philo];
+	return (SUCCESS);
+}
+
 void	*philosopher(void *p)
 {
 	t_shared	*shared;
+	t_philo		philo;
 	int32_t		start;
 
 	shared = (t_shared *)p;
+
 	while (1)
 	{
 		if (mutex_api(&shared->mutexes[START], isdead, shared))
@@ -144,7 +137,8 @@ void	*philosopher(void *p)
 		if (start == ERROR)
 			return (NULL);
 	}
-	start_feasting(shared);
+	construct_philo(shared, &philo);
+	start_feasting(shared, &philo);
 	return (NULL);
 }
 
@@ -169,15 +163,15 @@ int32_t	philo(char **argv)
 	pthread_t	philosophers[MAX_PHILOSOPHERS];
 
 	ft_bzero(&shared, sizeof(t_shared));
-	if (init_settings(&shared.cnf, argv) == ERROR)
+	if (get_config(&shared.cnf, argv) == ERROR)
 		return (ERROR);
 	if (init_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX))
 		return (destroy_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX));
-	if (breed_philosophers(&shared) == ERROR)
-		return (destroy_mutexes(shared.mutexes, shared.cnf.count + MUTEX));
+	if (breed_philosophers(&shared, philosophers) == ERROR)
+		return (destroy_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX));
 	monitor_philosophers(&shared);
-	if (clean_philosophers(&shared) == ERROR)
-		return (destroy_mutexes(shared.mutexes, shared.cnf.count + MUTEX));
-	destroy_mutexes(shared.mutexes, shared.cnf.count + MUTEX);
+	if (clean_philosophers(philosophers, shared.cnf.nb_philo) == ERROR)
+		return (destroy_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX));
+	destroy_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX);
 	return (SUCCESS);
 }

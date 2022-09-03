@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/03 18:37:16 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/03 19:10:50 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,15 +87,20 @@ typedef enum e_message
 
 typedef enum e_mutexindex
 {
-	VOICE,
-	DEAD,
 	START,
 	ID,
-	TAKE,
-	EAT,
-	SLEEP,
-	THINK,
+	VOICE,
+	DEAD,
 }	t_mutexindex;
+
+typedef	struct s_philo
+{
+	int32_t id;
+	int64_t	last_time_eaten;
+	int32_t	servings;
+	t_mutex	*left_fork;
+	t_mutex	*right_fork;
+}	t_philo;
 
 typedef struct s_config
 {
@@ -106,29 +111,18 @@ typedef struct s_config
 	int32_t	minimum_servings;
 }	t_config;
 
-typedef	struct s_philo
-{
-	int32_t id;
-	int64_t	last_time_eaten;
-	int32_t	servings;
-	t_mutex	left_fork;
-	t_mutex	right_fork;
-}	t_philo;
-
 typedef struct s_shared
 {	
 	bool		dead;
 	bool		start;
 	int64_t		start_time;
 	t_config	cnf;
-	t_mutex		mutexes[EXTRA_MUTEXES + MAX_FORKS];
+	t_mutex		mutexes[MUTEX + MAX_FORKS];
 }	t_shared;
 
 
 //init
-int32_t	init_settings(int32_t *count, t_philo *settings, char **argv);
-void	fill_settings(t_philo *settings, t_philo *standard, int32_t count);
-int32_t	construct_settings(t_philo *settings, char **argv);
+int32_t	get_config(t_config *cnf, char **argv);
 //mutex
 int32_t	init_mutexes(t_mutex	*mutexes, int32_t count);
 int32_t	destroy_mutexes(t_mutex *mutexes, int32_t count);
@@ -138,8 +132,8 @@ int32_t	make_thread(void *(*routine)(void *), void *shared, pthread_t *thread);
 int32_t	start_diner(t_shared *shared);
 int32_t	clean_table(pthread_t *philosophers, int32_t count);
 int32_t	join_thread(pthread_t *thread);
-int32_t	clean_philosophers(t_shared *shared);
-int32_t	breed_philosophers(t_shared *shared);
+int32_t	clean_philosophers(pthread_t *philosophers, int32_t count);
+int32_t	breed_philosophers(t_shared *shared, pthread_t *philosophers);
 //routine
 void	*philosopher(void *p);
 //start
