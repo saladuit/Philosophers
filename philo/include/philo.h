@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/02 16:45:17 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/03 18:37:16 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,8 @@
 # define MAX_FORKS MAX_PHILOSOPHERS
 # define MIN_TIME 60
 # define ERROR -1
-# define EXTRA_MUTEXES 8
+# define DONE 1
+# define MUTEX 8
 
 # define TOOK_FORK "has taken a fork"
 # define EATING "is eating"
@@ -96,30 +97,33 @@ typedef enum e_mutexindex
 	THINK,
 }	t_mutexindex;
 
-typedef	struct s_philo
+typedef struct s_config
 {
-	int32_t id;
-	int64_t	start_time;
-	int64_t	last_eaten;
+	int32_t	nb_philo;
 	int64_t	time_die;
 	int64_t	time_eat;
 	int64_t	time_sleep;
-	int32_t	eat_count;
-	int32_t	left_fork;
-	int32_t	right_fork;
+	int32_t	minimum_servings;
+}	t_config;
+
+typedef	struct s_philo
+{
+	int32_t id;
+	int64_t	last_time_eaten;
+	int32_t	servings;
+	t_mutex	left_fork;
+	t_mutex	right_fork;
 }	t_philo;
 
 typedef struct s_shared
 {	
-	int32_t		id;
-	int32_t		count;
 	bool		dead;
 	bool		start;
 	int64_t		start_time;
-	t_philo		settings[MAX_PHILOSOPHERS];
-	pthread_t	philosophers[MAX_PHILOSOPHERS];
+	t_config	cnf;
 	t_mutex		mutexes[EXTRA_MUTEXES + MAX_FORKS];
 }	t_shared;
+
 
 //init
 int32_t	init_settings(int32_t *count, t_philo *settings, char **argv);
