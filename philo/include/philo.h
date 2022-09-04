@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/03 19:10:50 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 11:18:22 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,7 @@ typedef	struct s_philo
 {
 	int32_t id;
 	int64_t	last_time_eaten;
+	int64_t	time_diff;
 	int32_t	servings;
 	t_mutex	*left_fork;
 	t_mutex	*right_fork;
@@ -116,6 +117,7 @@ typedef struct s_shared
 	bool		dead;
 	bool		start;
 	int64_t		start_time;
+	int32_t		philos_done_eating;
 	t_config	cnf;
 	t_mutex		mutexes[MUTEX + MAX_FORKS];
 }	t_shared;

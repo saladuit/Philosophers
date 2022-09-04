@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/03 19:11:38 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 11:21:37 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,11 @@ int64_t	time_diff_ms(int64_t start, int64_t end)
 
 int32_t	get_id(void *ptr)
 {
-	return (((t_config *)ptr)->nb_philo--);
+	int32_t	id;
+
+	id = ((t_config *)ptr)->nb_philo;
+	((t_config *)ptr)->nb_philo--;
+	return (id);
 }
 
 int32_t	isdead(void *ptr)
@@ -47,14 +51,7 @@ void	narrator(int64_t time, int32_t id, char *str)
 
 int32_t	eat(void *ptr)
 {
-	int32_t id;
-	int64_t	startms;
-
-	id = ((t_philo *)ptr)->id;
-	startms = ((t_philo *)ptr)->start_time;
-	narrator(time_diff_ms(startms, time_in_ms()), id, EATING);
-	((t_philo *)ptr)->eat_count--;
-	usleep(((t_philo *)ptr)->time_eat * 1000);
+	narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, EATING);
 	return (0);
 }
 
@@ -64,68 +61,53 @@ int32_t died(void *ptr)
 	return (0);
 }
 
-int32_t	check_eat_count(void *p)
+int32_t	check_eat_count(void *ptr)
 {
-	t_philo	*settings;
-
-	settings = (t_philo *)p;	
-	if (settings->eat_count == 0)
+	if (((t_philo *)ptr)->servings == 0)
 		return (DONE);
 	return (SUCCESS);
 }
 
 void	start_feasting(t_shared *shared, t_philo *philo)
 {
-	shared->settings[id - 1].start_time = shared->start_time;
 	while (1)
 	{
-		if (mutex_api(&shared->mutexes[VOICE], eat, &shared->settings[id - 1]))
+		philo->last_time_eaten = time_diff_ms(shared->start_time, time_in_ms());
+		if (mutex_api(&shared->mutexes[VOICE], eat, philo))
 			return ;
-
-		if (mutex_api(&shared->mutexes[VOICE], check_eat_count, &shared->settings[id - 1]))
+		philo->servings--;
+		usleep(shared->cnf.time_eat * 1000);
+		if (mutex_api(&shared->mutexes[VOICE], check_eat_count, philo))
 			return ;
 	}
 }
 
-int32_t	check_all_eat_count(void *p)
+int32_t	check_all_eat_count(void *ptr)
 {
-	t_shared	*shared;
-	int32_t		i;
-	int32_t		actions_left;
-
-	shared = (t_shared *)p;
-	i = 0;
-	actions_left = 0;
-	while (i < shared->count)
-	{
-		actions_left += shared->settings[i].eat_count;
-		i++;
-	}
-	if (actions_left == 0)
+	if (((t_shared *)ptr)->philos_done_eating == ((t_shared *)ptr)->cnf.nb_philo)
 		return (DONE);
 	return (SUCCESS);
 }
 
 int32_t	construct_philo(t_shared *shared, t_philo *philo)
 {
-	int32_t	id;
 	philo->id = mutex_api(&shared->mutexes[ID], get_id, shared);
-	if (id == ERROR)
+	if (philo->id == ERROR)
 		return (ERROR);
 	philo->last_time_eaten = 0;
 	philo->servings = 0;
-	philo->left_fork = &shared->mutexes[id - 1];
-	philo->right_fork = &shared->mutexes[id % shared->cnf.nb_philo];
+	philo->left_fork = &shared->mutexes[philo->id - 1];
+	philo->right_fork = &shared->mutexes[philo->id % shared->cnf.nb_philo];
 	return (SUCCESS);
 }
 
-void	*philosopher(void *p)
+void	*philosopher(void *ptr)
 {
 	t_shared	*shared;
 	t_philo		philo;
 	int32_t		start;
 
-	shared = (t_shared *)p;
+	shared = (t_shared *)ptr;
 
 	while (1)
 	{

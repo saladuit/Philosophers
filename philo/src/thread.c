@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/03 18:49:01 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 11:24:38 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ int32_t	clean_philosophers(pthread_t *philosophers, int32_t count)
 	i = 0;
 	while (i < count)
 	{
-		if (join_thread(philosophers[i]) == ERROR)
+		if (join_thread(&philosophers[i]) == ERROR)
 			return (ERROR);
 		i++;
 	}
@@ -72,7 +72,7 @@ int32_t	breed_philosophers(t_shared *shared, pthread_t *philosophers)
 		return (ERROR);
 	while (i < shared->cnf.nb_philo)
 	{
-		if (make_thread(philosopher, shared, philosophers[i]) == ERROR)
+		if (make_thread(philosopher, shared, philosophers) == ERROR)
 		{
 			shared->dead = true;
 			if (pthread_mutex_unlock(&shared->mutexes[START]))

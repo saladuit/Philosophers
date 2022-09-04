@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:03:41 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/03 18:53:42 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 11:23:18 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,6 @@ int32_t	get_config(t_config *cnf, char **argv)
 	if (argv[5])
 		cnf->minimum_servings = ft_atoi(argv[5]); //add in error checks
 	else
-		cnf->eat_count = -1;
+		cnf->minimum_servings = -1;
 	return (SUCCESS);
 }
