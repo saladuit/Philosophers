@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 14:37:52 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 17:50:30 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,7 +129,7 @@ int32_t	init_mutexes(t_mutex **mutexes, int32_t count);
 int32_t	destroy_mutexes(t_mutex *mutexes, int32_t count);
 int32_t	mutex_api(t_mutex *mutex, int32_t (*func) (void *), void *ptr);
 //thread
-int32_t	make_thread(void *(*routine)(void *), void *shared, pthread_t *thread);
+int32_t	make_thread(pthread_t *thread, void *(*routine)(void *), void *shared);
 int32_t	start_diner(t_shared *shared);
 int32_t	clean_table(pthread_t *philosophers, int32_t count);
 int32_t	join_thread(pthread_t *thread);
