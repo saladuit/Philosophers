@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 11:21:37 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 11:55:36 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,13 +61,6 @@ int32_t died(void *ptr)
 	return (0);
 }
 
-int32_t	check_eat_count(void *ptr)
-{
-	if (((t_philo *)ptr)->servings == 0)
-		return (DONE);
-	return (SUCCESS);
-}
-
 void	start_feasting(t_shared *shared, t_philo *philo)
 {
 	while (1)
@@ -77,7 +70,7 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 			return ;
 		philo->servings--;
 		usleep(shared->cnf.time_eat * 1000);
-		if (mutex_api(&shared->mutexes[VOICE], check_eat_count, philo))
+		if (philo->servings == 0)
 			return ;
 	}
 }
@@ -91,13 +84,16 @@ int32_t	check_all_eat_count(void *ptr)
 
 int32_t	construct_philo(t_shared *shared, t_philo *philo)
 {
-	philo->id = mutex_api(&shared->mutexes[ID], get_id, shared);
+	philo->id = mutex_api(&shared->mutexes[SHARED], get_id, &shared->cnf);
 	if (philo->id == ERROR)
 		return (ERROR);
 	philo->last_time_eaten = 0;
 	philo->servings = 0;
 	philo->left_fork = &shared->mutexes[philo->id - 1];
-	philo->right_fork = &shared->mutexes[philo->id % shared->cnf.nb_philo];
+	if (shared->cnf.nb_philo > 1)
+		philo->right_fork = &shared->mutexes[philo->id % shared->cnf.nb_philo];
+	else
+		philo->right_fork = 0;
 	return (SUCCESS);
 }
 
@@ -131,10 +127,10 @@ void	monitor_philosophers(t_shared *shared)
 	i = 0;
 	while (1)
 	{
-		if (mutex_api(&shared->mutexes[DEAD], isdead, shared))
+		if (mutex_api(&shared->mutexes[SHARED], isdead, shared))
 			if (mutex_api(&shared->mutexes[VOICE], died, shared))
 				return ;
-		if (mutex_api(&shared->mutexes[VOICE], check_all_eat_count, shared) == 1)
+		if (mutex_api(&shared->mutexes[SHARED], check_all_eat_count, shared) == 1)
 			return ;
 	}
 }

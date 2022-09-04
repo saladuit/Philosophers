@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 11:18:22 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 11:34:16 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,8 @@ typedef enum e_message
 typedef enum e_mutexindex
 {
 	START,
-	ID,
 	VOICE,
-	DEAD,
+	SHARED,
 }	t_mutexindex;
 
 typedef	struct s_philo
