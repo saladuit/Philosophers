@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 11:24:38 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 14:15:32 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,22 +62,25 @@ int32_t	make_thread(void *(*routine)(void *), void *ptr, pthread_t *thread)
 	return (SUCCESS);
 }
 
-int32_t	breed_philosophers(t_shared *shared, pthread_t *philosophers)
+int32_t	breed_philosophers(t_shared *shared, pthread_t **philosophers)
 {
 	int32_t	i;
 
 	i = 0;
-	
+	*philosophers = malloc(shared->cnf.nb_philo * sizeof(pthread_t));
+	if (!*philosophers)
+		return (ERROR);
+	ft_bzero(*philosophers, shared->cnf.nb_philo * sizeof(pthread_t));
 	if (pthread_mutex_lock(&shared->mutexes[START]))
 		return (ERROR);
 	while (i < shared->cnf.nb_philo)
 	{
-		if (make_thread(philosopher, shared, philosophers) == ERROR)
+		if (make_thread(*philosopher, shared, *philosophers) == ERROR)
 		{
 			shared->dead = true;
 			if (pthread_mutex_unlock(&shared->mutexes[START]))
-				return (pthread_create_failed(philosophers, i));
-			return (pthread_create_failed(philosophers, i));
+				return (pthread_create_failed(*philosophers, i));
+			return (pthread_create_failed(*philosophers, i));
 		}
 		i++;
 	}

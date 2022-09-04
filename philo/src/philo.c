@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 12:32:57 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 14:36:38 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,11 @@ int32_t died(void *ptr)
 	return (0);
 }
 
+int32_t update_done_philos(void *ptr)
+{
+	((t_shared *)ptr)->philos_done_eating++;
+	return (0);
+}
 void	start_feasting(t_shared *shared, t_philo *philo)
 {
 	while (1)
@@ -71,7 +76,10 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 		philo->servings++;
 		usleep(shared->cnf.time_eat * 1000);
 		if (philo->servings == shared->cnf.minimum_servings) //insert update for philos_done_eating
+		{
+			mutex_api(&shared->mutexes[SHARED], update_done_philos, shared);
 			return ;
+		}
 	}
 }
 
@@ -89,11 +97,11 @@ int32_t	construct_philo(t_shared *shared, t_philo *philo)
 		return (ERROR);
 	philo->last_time_eaten = 0;
 	philo->servings = 0;
-	philo->left_fork = &shared->mutexes[philo->id - 1];
-	if (shared->cnf.nb_philo > 1)
-		philo->right_fork = &shared->mutexes[philo->id % shared->cnf.nb_philo];
-	else
+	philo->left_fork = &shared->mutexes[MUTEX + philo->id - 1];
+	if (shared->cnf.nb_philo == 1)
 		philo->right_fork = NULL;
+	else
+		philo->right_fork = &shared->mutexes[MUTEX + (philo->id % shared->cnf.nb_philo)];
 	return (SUCCESS);
 }
 
@@ -138,15 +146,15 @@ void	monitor_philosophers(t_shared *shared)
 int32_t	philo(char **argv)
 {
 	t_shared	shared;
-	pthread_t	philosophers[MAX_PHILOSOPHERS];
+	pthread_t	*philosophers;
 
 	ft_bzero(&shared, sizeof(t_shared));
-	ft_bzero(philosophers, sizeof(pthread_t) * MAX_PHILOSOPHERS);
 	if (get_config(&shared.cnf, argv) == ERROR)
 		return (ERROR);
-	if (init_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX))
+	if (init_mutexes(&shared.mutexes, shared.cnf.nb_philo + MUTEX) == ERROR)
 		return (destroy_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX));
-	if (breed_philosophers(&shared, philosophers) == ERROR)
+	philosophers = NULL;
+	if (breed_philosophers(&shared, &philosophers) == ERROR)
 		return (destroy_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX));
 	monitor_philosophers(&shared);
 	if (clean_philosophers(philosophers, shared.cnf.nb_philo) == ERROR)

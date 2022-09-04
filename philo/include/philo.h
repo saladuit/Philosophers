@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 12:09:13 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 14:37:52 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,14 +118,14 @@ typedef struct s_shared
 	int64_t		start_time;
 	int32_t		philos_done_eating;
 	t_config	cnf;
-	t_mutex		mutexes[MUTEX + MAX_FORKS];
+	t_mutex		*mutexes;
 }	t_shared;
 
 
 //init
 int32_t	get_config(t_config *cnf, char **argv);
 //mutex
-int32_t	init_mutexes(t_mutex	*mutexes, int32_t count);
+int32_t	init_mutexes(t_mutex **mutexes, int32_t count);
 int32_t	destroy_mutexes(t_mutex *mutexes, int32_t count);
 int32_t	mutex_api(t_mutex *mutex, int32_t (*func) (void *), void *ptr);
 //thread
@@ -134,7 +134,7 @@ int32_t	start_diner(t_shared *shared);
 int32_t	clean_table(pthread_t *philosophers, int32_t count);
 int32_t	join_thread(pthread_t *thread);
 int32_t	clean_philosophers(pthread_t *philosophers, int32_t count);
-int32_t	breed_philosophers(t_shared *shared, pthread_t *philosophers);
+int32_t	breed_philosophers(t_shared *shared, pthread_t **philosophers);
 //routine
 void	*philosopher(void *p);
 //start
