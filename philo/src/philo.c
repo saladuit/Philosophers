@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 11:55:36 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 12:08:26 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	narrator(int64_t time, int32_t id, char *str)
 int32_t	eat(void *ptr)
 {
 	narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, EATING);
-	return (0);
+	return (time_in_ms());
 }
 
 int32_t died(void *ptr)
@@ -65,12 +65,13 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 {
 	while (1)
 	{
-		philo->last_time_eaten = time_diff_ms(shared->start_time, time_in_ms());
-		if (mutex_api(&shared->mutexes[VOICE], eat, philo))
+		philo->time_diff = time_diff_ms(shared->start_time, time_in_ms());
+		philo->last_time_eaten = mutex_api(&shared->mutexes[VOICE], eat, philo);
+		if (philo->last_time_eaten == ERROR)
 			return ;
-		philo->servings--;
+		philo->servings++;
 		usleep(shared->cnf.time_eat * 1000);
-		if (philo->servings == 0)
+		if (philo->servings == shared->cnf.minimum_servings)
 			return ;
 	}
 }
@@ -93,7 +94,7 @@ int32_t	construct_philo(t_shared *shared, t_philo *philo)
 	if (shared->cnf.nb_philo > 1)
 		philo->right_fork = &shared->mutexes[philo->id % shared->cnf.nb_philo];
 	else
-		philo->right_fork = 0;
+		philo->right_fork = NULL;
 	return (SUCCESS);
 }
 

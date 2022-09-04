@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 11:34:16 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 12:09:13 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # define MIN_TIME 60
 # define ERROR -1
 # define DONE 1
-# define MUTEX 8
+# define MUTEX 3
 
 # define TOOK_FORK "has taken a fork"
 # define EATING "is eating"
