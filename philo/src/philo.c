@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 14:36:38 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/04 18:45:45 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int64_t	time_in_ms(void) {
 
 int64_t	time_diff_ms(int64_t start, int64_t end)
 {
-    return ((end - start) * 1000) + ((end - start) / 1000);
+    return (end - start);
 }
 
 int32_t	get_id(void *ptr)
@@ -65,16 +65,44 @@ int32_t update_done_philos(void *ptr)
 	((t_shared *)ptr)->philos_done_eating++;
 	return (0);
 }
+
+void	ft_usleep(int64_t time)
+{
+	int64_t current_time;
+
+	current_time = time_in_ms();
+	while (time_in_ms() - current_time < time)
+	{
+		usleep(100);
+	}
+}
+
+int32_t	take_right_fork(void *ptr)
+{
+		narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, TOOK_FORK);
+		narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, EATING);
+		return (SUCCESS);
+}
+
+int32_t	take_left_fork(void *ptr)
+{
+		narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, TOOK_FORK);
+		mutex_api(((t_philo *)ptr)->left_fork, take_right_fork, ptr);
+		return (SUCCESS);
+}
+
 void	start_feasting(t_shared *shared, t_philo *philo)
 {
 	while (1)
 	{
 		philo->time_diff = time_diff_ms(shared->start_time, time_in_ms());
+		mutex_api(&shared->mutexes[VOICE], take_left_fork, philo);
+		philo->time_diff = time_diff_ms(shared->start_time, time_in_ms());
 		philo->last_time_eaten = mutex_api(&shared->mutexes[VOICE], eat, philo);
 		if (philo->last_time_eaten == ERROR)
 			return ;
 		philo->servings++;
-		usleep(shared->cnf.time_eat * 1000);
+		ft_usleep(shared->cnf.time_eat);
 		if (philo->servings == shared->cnf.minimum_servings) //insert update for philos_done_eating
 		{
 			mutex_api(&shared->mutexes[SHARED], update_done_philos, shared);
