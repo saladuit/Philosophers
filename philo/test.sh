@@ -1,2 +1,9 @@
 #!/bin/bash
-./philo  3 300 100 100 2
+#./philo  1 180 60 60 10
+#echo
+#./philo  3 180 60 60 10
+#echo
+#./philo 4 120 60 60 10
+#echo
+./philo  3 169 60 60 5
+echo
