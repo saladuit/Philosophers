@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 18:45:45 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/05 10:30:08 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,17 +77,64 @@ void	ft_usleep(int64_t time)
 	}
 }
 
-int32_t	take_right_fork(void *ptr)
+int32_t	narrate_taken_fork(void *ptr)
 {
+		((t_philo *)ptr)->time_diff = time_diff_ms(((t_philo *)ptr)->shared->start_time, time_in_ms());
 		narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, TOOK_FORK);
-		narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, EATING);
 		return (SUCCESS);
 }
 
-int32_t	take_left_fork(void *ptr)
+int32_t	narrate_is_eating(void *ptr)
 {
-		narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, TOOK_FORK);
-		mutex_api(((t_philo *)ptr)->left_fork, take_right_fork, ptr);
+		((t_philo *)ptr)->time_diff = time_diff_ms(((t_philo *)ptr)->shared->start_time, time_in_ms());
+		narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, EATING);
+		ft_usleep(((t_philo *)ptr)->shared->cnf.time_eat);
+		return (SUCCESS);
+}
+
+int32_t	narrate_is_thinking(void *ptr)
+{
+		((t_philo *)ptr)->time_diff = time_diff_ms(((t_philo *)ptr)->shared->start_time, time_in_ms());
+		narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, THINKING);
+		return (SUCCESS);
+}
+
+int32_t	narrate_is_sleeping(void *ptr)
+{
+		((t_philo *)ptr)->time_diff = time_diff_ms(((t_philo *)ptr)->shared->start_time, time_in_ms());
+		narrator(((t_philo *)ptr)->time_diff, ((t_philo *)ptr)->id, SLEEPING);
+		ft_usleep(((t_philo *)ptr)->shared->cnf.time_sleep);
+		return (SUCCESS);
+}
+
+int32_t	take_left_fork_second(void *ptr)
+{
+		mutex_api(&((t_philo *)ptr)->shared->mutexes[VOICE], narrate_taken_fork, ptr);
+		mutex_api(&((t_philo *)ptr)->shared->mutexes[VOICE], narrate_is_eating, ptr);
+		return (SUCCESS);
+}
+
+int32_t	take_right_fork_first(void *ptr)
+{
+		mutex_api(&((t_philo *)ptr)->shared->mutexes[VOICE], narrate_taken_fork, ptr);
+		if (mutex_api(((t_philo *)ptr)->left_fork, take_left_fork_second, ptr) == ERROR)
+			return (ERROR);
+		return (SUCCESS);
+}
+
+int32_t	take_right_fork_second(void *ptr)
+{
+		mutex_api(&((t_philo *)ptr)->shared->mutexes[VOICE], narrate_taken_fork, ptr);
+		mutex_api(&((t_philo *)ptr)->shared->mutexes[VOICE], narrate_is_eating, ptr);
+		return (SUCCESS);
+}
+
+int32_t	take_left_fork_first(void *ptr)
+{
+		((t_philo *)ptr)->time_diff = time_diff_ms(((t_philo *)ptr)->shared->start_time, time_in_ms());
+		mutex_api(&((t_philo *)ptr)->shared->mutexes[VOICE], narrate_taken_fork, ptr);
+		if (mutex_api(((t_philo *)ptr)->right_fork, take_right_fork_second, ptr) == ERROR)
+			return (ERROR);
 		return (SUCCESS);
 }
 
@@ -95,15 +142,16 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 {
 	while (1)
 	{
-		philo->time_diff = time_diff_ms(shared->start_time, time_in_ms());
-		mutex_api(&shared->mutexes[VOICE], take_left_fork, philo);
-		philo->time_diff = time_diff_ms(shared->start_time, time_in_ms());
-		philo->last_time_eaten = mutex_api(&shared->mutexes[VOICE], eat, philo);
+		if (philo->id % 2 == 0)
+			mutex_api(philo->left_fork, take_left_fork_first, philo);
+		else
+			mutex_api(philo->right_fork, take_right_fork_first, philo);
+		mutex_api(&shared->mutexes[VOICE], narrate_is_sleeping, philo);
+		mutex_api(&shared->mutexes[VOICE], narrate_is_thinking, philo);
 		if (philo->last_time_eaten == ERROR)
 			return ;
 		philo->servings++;
-		ft_usleep(shared->cnf.time_eat);
-		if (philo->servings == shared->cnf.minimum_servings) //insert update for philos_done_eating
+		if (philo->servings == shared->cnf.minimum_servings)
 		{
 			mutex_api(&shared->mutexes[SHARED], update_done_philos, shared);
 			return ;
@@ -130,6 +178,7 @@ int32_t	construct_philo(t_shared *shared, t_philo *philo)
 		philo->right_fork = NULL;
 	else
 		philo->right_fork = &shared->mutexes[MUTEX + (philo->id % shared->cnf.nb_philo)];
+	philo->shared = shared;
 	return (SUCCESS);
 }
 
@@ -141,7 +190,7 @@ void	*philosopher(void *ptr)
 
 	shared = (t_shared *)ptr;
 
-	while (1)
+	while (true)
 	{
 		if (mutex_api(&shared->mutexes[START], isdead, shared))
 			return (NULL);
@@ -161,12 +210,12 @@ void	monitor_philosophers(t_shared *shared)
 	int32_t	i;
 
 	i = 0;
-	while (1)
+	while (true)
 	{
 		if (mutex_api(&shared->mutexes[SHARED], isdead, shared))
 			if (mutex_api(&shared->mutexes[VOICE], died, shared))
 				return ;
-		if (mutex_api(&shared->mutexes[SHARED], check_servings, shared) == 1)
+		if (mutex_api(&shared->mutexes[SHARED], check_servings, shared) == DONE)
 			return ;
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 17:50:30 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/05 09:25:14 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,16 +92,6 @@ typedef enum e_mutexindex
 	SHARED,
 }	t_mutexindex;
 
-typedef	struct s_philo
-{
-	int32_t id;
-	int64_t	last_time_eaten;
-	int64_t	time_diff;
-	int32_t	servings;
-	t_mutex	*left_fork;
-	t_mutex	*right_fork;
-}	t_philo;
-
 typedef struct s_config
 {
 	int32_t	nb_philo;
@@ -121,6 +111,16 @@ typedef struct s_shared
 	t_mutex		*mutexes;
 }	t_shared;
 
+typedef	struct s_philo
+{
+	int32_t 	id;
+	int64_t		last_time_eaten;
+	int64_t		time_diff;
+	int32_t		servings;
+	t_mutex		*left_fork;
+	t_mutex		*right_fork;
+	t_shared	*shared;
+}	t_philo;
 
 //init
 int32_t	get_config(t_config *cnf, char **argv);
@@ -136,7 +136,7 @@ int32_t	join_thread(pthread_t *thread);
 int32_t	clean_philosophers(pthread_t *philosophers, int32_t count);
 int32_t	breed_philosophers(t_shared *shared, pthread_t **philosophers);
 //routine
-void	*philosopher(void *p);
+void	*philosopher(void *ptr);
 //start
 int32_t	philo(char **argv);
 //utils
