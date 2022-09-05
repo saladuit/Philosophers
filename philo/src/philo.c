@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/05 17:34:24 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/05 18:25:43 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int32_t	narrate_taken_fork(void *ptr)
 
 	philo = (t_philo *)ptr;
 	philo->time_diff = time_diff_ms(philo->shared->start_time, time_in_ms());
-	if (mutex_api(&philo->shared->mutexes[START], isdead, philo->shared))
+	if (mutex_api(&philo->shared->mutexes[DEAD], isdead, philo->shared))
 		return (DONE);
 	narrator(philo->time_diff, philo->id, TOOK_FORK);
 	return (SUCCESS);
@@ -103,15 +103,16 @@ int32_t philo_has_died(void *ptr)
 	philo->shared->dead = true;
 	return (SUCCESS);
 }
+
 int32_t	narrate_died(void *ptr)
 {
 	t_philo	*philo;
 
 	philo = (t_philo *)ptr;
 	philo->time_diff = time_diff_ms(philo->shared->start_time, time_in_ms());
-	if (mutex_api(&philo->shared->mutexes[START], isdead, philo->shared))
+	if (mutex_api(&philo->shared->mutexes[DEAD], isdead, philo->shared))
 		return (DONE);
-	mutex_api(&philo->shared->mutexes[START], philo_has_died, ptr);
+	mutex_api(&philo->shared->mutexes[DEAD], philo_has_died, ptr);
 	return (SUCCESS);
 }
 
@@ -124,7 +125,7 @@ int32_t	narrate_is_eating(void *ptr)
 
 	timestamp = time_in_ms();
 	philo->time_diff = time_diff_ms(philo->shared->start_time, timestamp);
-	if (mutex_api(&philo->shared->mutexes[START], isdead, philo->shared))
+	if (mutex_api(&philo->shared->mutexes[DEAD], isdead, philo->shared))
 		return (DONE);
 	narrator(philo->time_diff, philo->id, EATING);
 	philo->last_time_eaten = timestamp;
@@ -138,7 +139,7 @@ int32_t	narrate_is_thinking(void *ptr)
 
 	philo = (t_philo *)ptr;
 	philo->time_diff = time_diff_ms(philo->shared->start_time, time_in_ms());
-	if (mutex_api(&philo->shared->mutexes[START], isdead, philo->shared))
+	if (mutex_api(&philo->shared->mutexes[DEAD], isdead, philo->shared))
 		return (DONE);
 	narrator(philo->time_diff, philo->id, THINKING);
 	return (SUCCESS);
@@ -150,7 +151,7 @@ int32_t	narrate_is_sleeping(void *ptr)
 
 	philo = (t_philo *)ptr;
 	philo->time_diff = time_diff_ms(philo->shared->start_time, time_in_ms());
-	if (mutex_api(&philo->shared->mutexes[START], isdead, philo->shared))
+	if (mutex_api(&philo->shared->mutexes[DEAD], isdead, philo->shared));
 		return (DONE);
 	narrator(philo->time_diff, philo->id, SLEEPING);
 	ft_usleep(philo->shared->cnf.time_sleep);
@@ -309,7 +310,7 @@ int32_t	check_philosophers(void *ptr)
 	i = 0;
 	while (philos[i] != NULL)
 	{
-		if (time_in_ms() - mutex_api(&shared->mutexes[VOICE], get_last_time_eaten, &philos[i]->last_time_eaten) > shared->cnf.time_die)
+		if (time_in_ms() - mutex_api(&shared->mutexes[DEAD], get_last_time_eaten, &philos[i]->last_time_eaten) > shared->cnf.time_die)
 		{
 			mutex_api(&shared->mutexes[VOICE], narrate_died, philos[i]);
 			return (SUCCESS);
