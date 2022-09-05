@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/05 13:00:35 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/05 14:08:34 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ int32_t	breed_philosophers(t_shared *shared, pthread_t **philosophers)
 	{
 		if (make_thread(&(*philosophers)[i], philosopher, shared) == ERROR)
 		{
-			shared->dead_id = 1;
+			shared->dead = true;
 			if (pthread_mutex_unlock(&shared->mutexes[START]))
 				return (pthread_create_failed(*philosophers, i));
 			return (pthread_create_failed(*philosophers, i));
