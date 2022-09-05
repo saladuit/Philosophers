@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/05 12:04:11 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/05 13:23:30 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,7 +172,17 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 			mutex_api(philo->left_fork, take_left_fork_first, philo);
 		else
 			mutex_api(philo->right_fork, take_right_fork_first, philo);
+		if (time_in_ms() - philo->last_time_eaten > shared->cnf.time_die)
+		{
+			(mutex_api(&shared->mutexes[VOICE], narrate_died, philo));
+			return ;
+		}
 		mutex_api(&shared->mutexes[VOICE], narrate_is_sleeping, philo);
+		if (time_in_ms() - philo->last_time_eaten > shared->cnf.time_die)
+		{
+			(mutex_api(&shared->mutexes[VOICE], narrate_died, philo));
+			return ;
+		}
 		mutex_api(&shared->mutexes[VOICE], narrate_is_thinking, philo);
 		philo->servings++;
 		if (philo->servings == shared->cnf.minimum_servings)
@@ -203,6 +213,7 @@ int32_t	construct_philo(t_shared *shared, t_philo *philo)
 	else
 		philo->right_fork = &shared->mutexes[MUTEX + (philo->id % shared->cnf.nb_philo)];
 	philo->shared = shared;
+	philo->shared->states[philo->id] = philo;
 	return (SUCCESS);
 }
 
@@ -216,6 +227,7 @@ void	*philosopher(void *ptr)
 
 	while (true)
 	{
+		construct_philo(shared, &philo);
 		if (mutex_api(&shared->mutexes[START], isdead, shared))
 			return (NULL);
 		start = mutex_api(&shared->mutexes[START], canstart, shared);
@@ -224,7 +236,6 @@ void	*philosopher(void *ptr)
 		if (start == ERROR)
 			return (NULL);
 	}
-	construct_philo(shared, &philo);
 	start_feasting(shared, &philo);
 	return (NULL);
 }
@@ -238,7 +249,7 @@ void	monitor_philosophers(t_shared *shared)
 	{
 		if (mutex_api(&shared->mutexes[SHARED], isdead, shared) != 0)
 		{
-			narrator(shared->start_time - time_in_ms(), shared->dead_id, DIED);
+			narrator(time_in_ms() - shared->start_time, shared->dead_id, DIED);
 			return ;
 		}
 		if (mutex_api(&shared->mutexes[SHARED], check_servings, shared))
@@ -257,6 +268,9 @@ int32_t	philo(char **argv)
 	if (init_mutexes(&shared.mutexes, shared.cnf.nb_philo + MUTEX) == ERROR)
 		return (destroy_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX));
 	philosophers = NULL;
+	shared.states = malloc(shared.cnf.nb_philo * sizeof(t_philo *));
+	if (shared.states == NULL)
+		return (ERROR);
 	if (breed_philosophers(&shared, &philosophers) == ERROR)
 		return (destroy_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX));
 	monitor_philosophers(&shared);
