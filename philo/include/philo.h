@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/06 14:34:04 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/06 15:43:27 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 # define MIN_TIME 60
 # define ERROR -1
 # define DONE 1
-# define MUTEX 8
+# define MUTEX 9
 
 # define TOOK_FORK "has taken a fork"
 # define EATING "is eating"
@@ -88,7 +88,6 @@ typedef enum e_message
 typedef enum e_mutexindex
 {
 	ID,
-	PTR,
 	BREED,
 	START,
 	VOICE,
@@ -96,6 +95,7 @@ typedef enum e_mutexindex
 	EAT,
 	DEAD,
 	SERVINGS,
+	MUTERROR,
 }	t_mutexindex;
 
 typedef struct s_config
@@ -111,6 +111,7 @@ typedef struct s_shared
 {	
 	bool			dead;
 	bool			start;
+	bool			error;
 	int64_t			start_time;
 	int32_t			philos_done_eating;
 	t_config		cnf;
@@ -130,6 +131,7 @@ typedef	struct s_philo
 }	t_philo;
 
 //init
+void	init_philos(t_shared *shared, int32_t count);
 int32_t	get_config(t_config *cnf, char **argv);
 //mutex
 int32_t	init_mutexes(t_mutex **mutexes, int32_t count);
@@ -147,6 +149,7 @@ void	*philosopher(void *ptr);
 //start
 int32_t	philo(char **argv);
 //memory
+int32_t	allocate_memory(t_shared *shared, pthread_t **philosophers, int32_t n);
 int32_t deallocate_memory(t_shared *shared, pthread_t **philosophers);
 int32_t	clean_mutexes(t_mutex **mutexes, int32_t count);
 int32_t	clean_shared(t_shared *shared, pthread_t **philosophers, int32_t count);
