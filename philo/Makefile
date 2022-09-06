@@ -6,7 +6,7 @@
 #    By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /    #
 #                                                  (|     | )|_| |_| |>  <     #
 #    Created: 2022/07/07 17:49:38 by safoh        /'\_   _/`\__|\__,_/_/\_\    #
-#    Updated: 2022/09/05 14:44:40 by safoh        \___)=(___/                  #
+#    Updated: 2022/09/06 20:33:28 by safoh        \___)=(___/                  #
 #                                                                              #
 # **************************************************************************** #
 
@@ -61,6 +61,8 @@ fsan:
 
 resan: fclean
 	@$(MAKE) fsan
+
+bonus: all
 
 re_malloc_test: fclean
 	@$(MAKE) malloc_test

@@ -6,18 +6,18 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:03:41 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/06 15:45:07 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/06 20:43:29 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-int32_t	construct_philo(t_shared *shared, t_philo *philo, int32_t id)
+int32_t	construct_philo(t_shared *shared, t_philo *philo, int32_t i)
 {
-	philo->id = id;
-	philo->last_time_eaten = 0;
+	philo->id = i + 1;
+	philo->last_time_eaten = time_in_ms();
 	philo->servings = 0;
-	philo->left_fork = &shared->mutexes[MUTEX + philo->id - 1];
+	philo->left_fork = &shared->mutexes[MUTEX + i];
 	if (shared->cnf.nb_philo == 1)
 		philo->right_fork = NULL;
 	else
@@ -33,7 +33,7 @@ void	init_philos(t_shared *shared, int32_t count)
 	i = 0;
 	while (i < count)
 	{
-		construct_philo(shared, shared->philos[i], i + 1);
+		construct_philo(shared, &shared->philos[i], i);
 		i++;
 	}
 }
@@ -60,12 +60,12 @@ int32_t	allocate_memory(t_shared *shared, pthread_t **philosophers, int32_t n)
 	*philosophers = malloc(n * sizeof(pthread_t));
 	if (!*philosophers)
 		return (deallocate_memory(shared, philosophers));
-	shared->philos = malloc((n + 1) * sizeof(t_philo *));
+	shared->philos = malloc(n * sizeof(t_philo));
 	if (shared->philos == NULL)
 		return (deallocate_memory(shared, philosophers));
 	ft_bzero(*philosophers, n * sizeof(pthread_t));
 	ft_bzero(shared->mutexes, n * sizeof(t_mutex));
-	ft_bzero(shared->philos, (n + 1) * sizeof(t_philo *));
+	ft_bzero(shared->philos, n * sizeof(t_philo));
 	return (SUCCESS);
 }
 
