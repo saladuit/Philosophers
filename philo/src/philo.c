@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/05 18:25:43 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/06 09:54:56 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ int32_t	narrate_is_sleeping(void *ptr)
 
 	philo = (t_philo *)ptr;
 	philo->time_diff = time_diff_ms(philo->shared->start_time, time_in_ms());
-	if (mutex_api(&philo->shared->mutexes[DEAD], isdead, philo->shared));
+	if (mutex_api(&philo->shared->mutexes[DEAD], isdead, philo->shared))
 		return (DONE);
 	narrator(philo->time_diff, philo->id, SLEEPING);
 	ft_usleep(philo->shared->cnf.time_sleep);
@@ -346,8 +346,8 @@ int32_t	philo(char **argv)
 	if (init_mutexes(&shared.mutexes, shared.cnf.nb_philo + MUTEX) == ERROR)
 		return (destroy_mutexes(shared.mutexes, shared.cnf.nb_philo + MUTEX));
 	philosophers = NULL;
-	shared.philos = malloc(shared.cnf.nb_philo * sizeof(t_philo *));
-	ft_bzero(shared.philos, shared.cnf.nb_philo * sizeof(t_philo *));
+	shared.philos = malloc((shared.cnf.nb_philo + 1) * sizeof(t_philo *));
+	ft_bzero(shared.philos, (shared.cnf.nb_philo + 1) * sizeof(t_philo *));
 	if (shared.philos == NULL)
 		return (ERROR);
 	if (breed_philosophers(&shared, &philosophers) == ERROR)
