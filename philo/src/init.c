@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:03:41 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/04 11:23:18 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/06 14:33:54 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,5 +22,19 @@ int32_t	get_config(t_config *cnf, char **argv)
 		cnf->minimum_servings = ft_atoi(argv[5]); //add in error checks
 	else
 		cnf->minimum_servings = -1;
+	return (SUCCESS);
+}
+
+int32_t	init_mutexes(t_mutex **mutexes, int32_t count)
+{
+	int32_t	i;
+
+	i = 0;
+	while (i < count)
+	{
+		if (pthread_mutex_init(&(*mutexes)[i], NULL))
+			return (clean_mutexes(mutexes, i));
+		i++;
+	}
 	return (SUCCESS);
 }

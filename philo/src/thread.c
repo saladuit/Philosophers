@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/05 14:08:34 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/06 12:46:59 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,19 +41,6 @@ int32_t	pthread_create_failed(pthread_t *philosophers, int32_t count)
 	return (ERROR);
 }
 
-int32_t	clean_philosophers(pthread_t *philosophers, int32_t count)
-{
-	int32_t	i;
-
-	i = 0;
-	while (i < count)
-	{
-		if (join_thread(&philosophers[i]) == ERROR)
-			return (ERROR);
-		i++;
-	}
-	return (SUCCESS);
-}
 
 int32_t	make_thread(pthread_t *thread, void *(*routine)(void *), void *ptr)
 {
@@ -67,26 +54,27 @@ int32_t	breed_philosophers(t_shared *shared, pthread_t **philosophers)
 	int32_t	i;
 
 	i = 0;
-	*philosophers = malloc(shared->cnf.nb_philo * sizeof(pthread_t));
-	if (!*philosophers)
-		return (ERROR);
-	ft_bzero(*philosophers, shared->cnf.nb_philo * sizeof(pthread_t));
-	if (pthread_mutex_lock(&shared->mutexes[START]))
+	if (pthread_mutex_lock(&shared->mutexes[BREED]))
 		return (ERROR);
 	while (i < shared->cnf.nb_philo)
 	{
 		if (make_thread(&(*philosophers)[i], philosopher, shared) == ERROR)
 		{
+			pthread_mutex_lock(&shared->mutexes[DEAD]);
 			shared->dead = true;
-			if (pthread_mutex_unlock(&shared->mutexes[START]))
-				return (pthread_create_failed(*philosophers, i));
-			return (pthread_create_failed(*philosophers, i));
+			pthread_mutex_unlock(&shared->mutexes[DEAD]);
+			pthread_mutex_unlock(&shared->mutexes[BREED]);
+			return (join_philosophers(*philosophers, i));
 		}
 		i++;
 	}
+	if (pthread_mutex_lock(&shared->mutexes[START]))
+		return (ERROR);
 	shared->start = true;
 	shared->start_time = time_in_ms();
 	if (pthread_mutex_unlock(&shared->mutexes[START]))
+		return (ERROR);
+	if (pthread_mutex_unlock(&shared->mutexes[BREED]))
 		return (ERROR);
 	return (SUCCESS);
 }
