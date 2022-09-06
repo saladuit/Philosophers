@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/05 17:43:42 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/06 10:32:09 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,13 +105,13 @@ typedef struct s_config
 
 typedef struct s_shared
 {	
-	bool		dead;
-	bool		start;
-	int64_t		start_time;
-	int32_t		philos_done_eating;
-	t_config	cnf;
-	t_mutex		*mutexes;
-	struct s_philo		**philos;
+	bool			dead;
+	bool			start;
+	int64_t			start_time;
+	int32_t			philos_done_eating;
+	t_config		cnf;
+	t_mutex			*mutexes;
+	struct s_philo	**philos;
 }	t_shared;
 
 typedef	struct s_philo

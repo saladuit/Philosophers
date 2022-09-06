@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/06 09:54:56 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/06 10:44:04 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -299,23 +299,21 @@ int32_t 	get_last_time_eaten(void *ptr)
 	return (*((int64_t *)ptr));
 }
 
-int32_t	check_philosophers(void *ptr)
+int32_t	did_someone_die(void *ptr)
 {
+	t_philo		**philos;
 	t_shared	*shared;
-	t_philo	**philos;
+	int64_t		last_time_eaten;
 	int64_t		i;
 
+	i = 0;
 	shared = ptr;
 	philos = shared->philos;
-	i = 0;
 	while (philos[i] != NULL)
 	{
-		if (time_in_ms() - mutex_api(&shared->mutexes[DEAD], get_last_time_eaten, &philos[i]->last_time_eaten) > shared->cnf.time_die)
-		{
-			mutex_api(&shared->mutexes[VOICE], narrate_died, philos[i]);
-			return (SUCCESS);
-
-		}
+		last_time_eaten = mutex_api(&shared->mutexes[DEAD], get_last_time_eaten, &philos[i]->last_time_eaten);
+		if (time_in_ms() - last_time_eaten > shared->cnf.time_die)
+			return (i);
 		i++;
 	}
 	return (SUCCESS);
@@ -328,8 +326,12 @@ void	monitor_philosophers(t_shared *shared)
 	i = 0;
 	while (true)
 	{
-		if (mutex_api(&shared->mutexes[SHARED], check_philosophers, shared))
+		i = mutex_api(&shared->mutexes[SHARED], did_someone_die, shared);
+		if (i)
+		{
+			mutex_api(&shared->mutexes[VOICE], narrate_died, shared->philos[i]);
 			return ;
+		}
 		if (mutex_api(&shared->mutexes[SHARED], check_servings, shared))
 			return ;
 	}
