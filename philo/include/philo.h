@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/06 16:09:04 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 12:03:13 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,7 +82,10 @@ typedef enum e_message
 {
 	SUCCESS,
 	USAGE,
-	MALLOC,
+	EINPUT,
+	EMALLOC,
+	EMUTEX,
+	EPTHREAD,
 }	t_message;
 
 typedef enum e_mutexindex
