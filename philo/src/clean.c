@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/09/06 12:00:50 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/06 14:32:35 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 11:34:22 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int32_t	clean_mutexes(t_mutex **mutexes, int32_t count)
 		pthread_mutex_destroy(&(*mutexes)[i]);
 		i++;
 	}
-	*mutexes = NULL;
 	return (ERROR);
 }
 
@@ -40,9 +39,11 @@ int32_t deallocate_memory(t_shared *shared, pthread_t **philosophers)
 	}
 	if (shared->mutexes)
 	{
+
 		free(shared->mutexes);
 		shared->mutexes = NULL;
 	}
+	printf("hallo wereld\n");
 	return (ERROR);
 }
 

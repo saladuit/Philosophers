@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:03:41 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/06 20:43:29 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 11:32:54 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ int32_t	init_mutexes(t_mutex **mutexes, int32_t count)
 
 int32_t	allocate_memory(t_shared *shared, pthread_t **philosophers, int32_t n)
 {
-	shared->mutexes = malloc(n * sizeof(t_mutex));
+	shared->mutexes = malloc((n + MUTEX) * sizeof(t_mutex));
 	if (shared->mutexes == NULL)
 		return (deallocate_memory(shared, philosophers));
 	*philosophers = malloc(n * sizeof(pthread_t));

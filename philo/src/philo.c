@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/06 20:56:13 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 11:45:01 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,13 +56,15 @@ bool	narrator(int64_t time, int32_t id, char *str, t_shared *shared)
 	return (false);
 }
 
-void	ft_mssleep(int64_t millisec)
+void	ft_mssleep(int64_t millisec, t_shared *shared)
 {
 	int64_t time_stamp;
 
 	time_stamp = time_in_ms();
 	while (time_in_ms() - time_stamp < millisec)
 	{
+		if (mutex_api(&shared->mutexes[DEAD], isdead, shared))
+			return ;
 		usleep(300);
 	}
 }
@@ -103,7 +105,7 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 			pthread_mutex_lock(&shared->mutexes[TIME]);
 			philo->last_time_eaten = time_in_ms();
 			pthread_mutex_unlock(&shared->mutexes[TIME]);
-			ft_mssleep(shared->cnf.time_eat);
+			ft_mssleep(shared->cnf.time_eat, shared);
 			pthread_mutex_unlock(philo->right_fork);
 			pthread_mutex_unlock(philo->left_fork);
 		}
@@ -126,7 +128,7 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 			pthread_mutex_lock(&shared->mutexes[TIME]);
 			philo->last_time_eaten = time_in_ms();
 			pthread_mutex_unlock(&shared->mutexes[TIME]);
-			ft_mssleep(shared->cnf.time_eat);
+			ft_mssleep(shared->cnf.time_eat, shared);
 			pthread_mutex_unlock(philo->left_fork);
 			pthread_mutex_unlock(philo->right_fork);
 		}
@@ -162,7 +164,7 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 		if (!done)
 			done = narrator(time_diff, philo->id, SLEEPING, shared);
 		pthread_mutex_unlock(&shared->mutexes[VOICE]);
-		ft_mssleep(shared->cnf.time_sleep);
+		ft_mssleep(shared->cnf.time_sleep, shared);
 
 		if (done)
 			return ;
@@ -254,9 +256,6 @@ int32_t	did_someone_die(void *ptr)
 
 void	monitor_philosophers(t_shared *shared)
 {
-	int32_t	i;
-
-	i = 0;
 	while (true)
 	{
 		if (did_someone_die(shared) == DONE)
@@ -275,6 +274,11 @@ int32_t	philo(char **argv)
 	ft_bzero(&shared, sizeof(t_shared));
 	if (get_config(&shared.cnf, argv) == ERROR)
 		return (ERROR);
+	if (shared.cnf.nb_philo == 1)
+	{
+		printf("%d\t%d\t%s\n", 0, 1, DIED);
+		return (DONE);
+	}
 	if (allocate_memory(&shared, &philosophers, shared.cnf.nb_philo) == ERROR)
 		return (ERROR);
 	if (init_mutexes(&shared.mutexes, shared.cnf.nb_philo + MUTEX) == ERROR)
