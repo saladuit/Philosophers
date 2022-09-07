@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/06 15:48:32 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 18:01:19 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,20 +20,6 @@ int32_t	join_thread(pthread_t *thread)
 	return (SUCCESS);
 }
 
-int32_t	pthread_create_failed(pthread_t *philosophers, int32_t count)
-{
-	int32_t	i;
-
-	i = 0;
-	while (i < count)
-	{
-		join_thread(&philosophers[i]);
-		i++;	
-	}
-	return (ERROR);
-}
-
-
 int32_t	make_thread(pthread_t *thread, void *(*routine)(void *), void *ptr)
 {
 	if (pthread_create(thread, NULL, routine, ptr))
@@ -46,11 +32,10 @@ int32_t	breed_philosophers(t_shared *shared, pthread_t **philosophers)
 	int32_t	i;
 
 	i = 0;
-	if (pthread_mutex_lock(&shared->mutexes[BREED]))
-		return (ERROR);
+	pthread_mutex_lock(&shared->mutexes[BREED]);
 	while (i < shared->cnf.nb_philo)
 	{
-		if (make_thread(&(*philosophers)[i], philosopher, &shared->philos[i]) == ERROR)
+		if (make_thread(&(*philosophers)[i], philosopher, &shared->philos[i]))
 		{
 			pthread_mutex_lock(&shared->mutexes[MUTERROR]);
 			shared->error = true;
@@ -60,13 +45,10 @@ int32_t	breed_philosophers(t_shared *shared, pthread_t **philosophers)
 		}
 		i++;
 	}
-	if (pthread_mutex_lock(&shared->mutexes[START]))
-		return (ERROR);
+	pthread_mutex_lock(&shared->mutexes[START]);
 	shared->start = true;
 	shared->start_time = time_in_ms();
-	if (pthread_mutex_unlock(&shared->mutexes[START]))
-		return (ERROR);
-	if (pthread_mutex_unlock(&shared->mutexes[BREED]))
-		return (ERROR);
+	pthread_mutex_unlock(&shared->mutexes[START]);
+	pthread_mutex_unlock(&shared->mutexes[BREED]);
 	return (SUCCESS);
 }

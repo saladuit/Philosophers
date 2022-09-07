@@ -6,13 +6,13 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:03:41 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 11:32:54 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 17:49:37 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
 
-int32_t	construct_philo(t_shared *shared, t_philo *philo, int32_t i)
+void	construct_philo(t_shared *shared, t_philo *philo, int32_t i)
 {
 	philo->id = i + 1;
 	philo->last_time_eaten = time_in_ms();
@@ -21,9 +21,9 @@ int32_t	construct_philo(t_shared *shared, t_philo *philo, int32_t i)
 	if (shared->cnf.nb_philo == 1)
 		philo->right_fork = NULL;
 	else
-		philo->right_fork = &shared->mutexes[MUTEX + (philo->id % shared->cnf.nb_philo)];
+		philo->right_fork = &shared->mutexes[MUTEX + \
+							(philo->id % shared->cnf.nb_philo)];
 	philo->shared = shared;
-	return (SUCCESS);
 }
 
 void	init_philos(t_shared *shared, int32_t count)
@@ -76,8 +76,15 @@ int32_t	get_config(t_config *cnf, char **argv)
 	cnf->time_eat = ft_atoi(argv[3]);
 	cnf->time_sleep = ft_atoi(argv[4]);
 	if (argv[5])
-		cnf->minimum_servings = ft_atoi(argv[5]); //add in error checks
+		cnf->minimum_servings = ft_atoi(argv[5]);
 	else
 		cnf->minimum_servings = -1;
+	if (cnf->nb_philo < 1 || cnf->nb_philo > 2047)
+		return (ERROR);
+	if (cnf->time_die < 60 || cnf->time_eat < 60 || cnf->time_sleep < 60)
+		return (ERROR);
+	if (argv[5])
+		if (cnf->minimus_servings < 0)
+			return (ERROR);
 	return (SUCCESS);
 }

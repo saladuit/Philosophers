@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 12:03:13 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 18:03:55 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@
 # include <string.h>
 //void	*memset(void *b, int c, size_t len);
 
- #include <sys/time.h>
+# include <sys/time.h>
 //int	gettimeofday(struct timeval *restrict tp, void *restrict tzp);
 //The system's notion of the current Greenwich time and the current time zone is
 //obtained with the gettimeofday() call, and set with the settimeofday() call.
@@ -53,8 +53,8 @@
 //            Marks a thread for deletion.
 
 //int	pthread_join(pthread_t thread, void **value_ptr)
-//           Causes the calling thread to wait for the termination of the specified
-//          thread.
+//           Causes the calling thread to wait for the termination of the 
+//          specified thread.
 
 //int	pthread_mutex_init(pthread_mutex_t *mutex,
 //             const pthread_mutexattr_t *attr)
@@ -75,8 +75,8 @@
 
 # include <libft.h>
 
-typedef struct timeval t_timeval;
-typedef pthread_mutex_t t_mutex;
+typedef struct timeval	t_timeval;
+typedef pthread_mutex_t	t_mutex;
 
 typedef enum e_message
 {
@@ -122,9 +122,9 @@ typedef struct s_shared
 	struct s_philo	*philos;
 }	t_shared;
 
-typedef	struct s_philo
+typedef struct s_philo
 {
-	int32_t 	id;
+	int32_t		id;
 	int64_t		last_time_eaten;
 	int64_t		time_diff;
 	int32_t		servings;
@@ -133,31 +133,38 @@ typedef	struct s_philo
 	t_shared	*shared;
 }	t_philo;
 
-//init
-void	init_philos(t_shared *shared, int32_t count);
-int32_t	get_config(t_config *cnf, char **argv);
-//mutex
-int32_t	init_mutexes(t_mutex **mutexes, int32_t count);
-int32_t	clean_mutexes(t_mutex **mutexes, int32_t count);
-int32_t	mutex_api(t_mutex *mutex, int32_t (*func) (void *), void *ptr);
-//thread
-int32_t	make_thread(pthread_t *thread, void *(*routine)(void *), void *shared);
-int32_t	start_diner(t_shared *shared);
-int32_t	clean_table(pthread_t *philosophers, int32_t count);
-int32_t	join_thread(pthread_t *thread);
-int32_t	clean_philosophers(pthread_t *philosophers, int32_t count);
-int32_t	breed_philosophers(t_shared *shared, pthread_t **philosophers);
-//routine
-void	*philosopher(void *ptr);
 //start
-int32_t	philo(char **argv);
-//memory
-int32_t	allocate_memory(t_shared *shared, pthread_t **philosophers, int32_t n);
-int32_t deallocate_memory(t_shared *shared, pthread_t **philosophers);
-int32_t	clean_mutexes(t_mutex **mutexes, int32_t count);
-int32_t	clean_shared(t_shared *shared, pthread_t **philosophers, int32_t count);
-int32_t	join_philosophers(pthread_t *philosophers, int32_t count);
-int32_t	clean_program(t_shared *shared, pthread_t **philosophers, int32_t count);
-//utils
-int64_t	time_in_ms(void);
+int32_t		philo(char **argv);
+//routine
+void		*philosopher(void *ptr);
+//init
+void		init_philos(t_shared *shared, int32_t count);
+int32_t		init_mutexes(t_mutex **mutexes, int32_t count);
+int32_t		get_config(t_config *cnf, char **argv);
+//mutex utils
+int32_t		check_servings(void *ptr);
+int32_t		philo_has_died(void *ptr);
+int32_t		sharedbool(void *ptr);
+int32_t		mutex_api(t_mutex *mutex, int32_t (*func) (void *), void *ptr);
+//memory allocations
+int32_t		join_thread(pthread_t *thread);
+int32_t		breed_philosophers(t_shared *shared, pthread_t **philosophers);
+int32_t		allocate_memory(t_shared *shared, pthread_t **philosophers, \
+		int32_t n);
+//memory deallocations
+int32_t		deallocate_memory(t_shared *shared, pthread_t **philosophers);
+int32_t		clean_mutexes(t_mutex **mutexes, int32_t count);
+int32_t		clean_shared(t_shared *shared, pthread_t **philosophers, \
+		int32_t count);
+int32_t		join_philosophers(pthread_t *philosophers, int32_t count);
+int32_t		clean_program(t_shared *shared, pthread_t **philosophers, \
+		int32_t count);
+//time
+void		ft_mssleep(int64_t millisec, t_shared *shared);
+int64_t		time_diff_ms(int64_t start, int64_t end);
+int64_t		time_in_ms(void);
+//print
+bool		narrator(int64_t time, int32_t id, char *str, t_shared *shared);
+void		ft_philo_error(t_message code);
+const char	*philo_messages(t_message code);
 #endif
