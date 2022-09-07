@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/09/07 17:12:21 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 18:19:15 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 19:36:12 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 		}
 		else
 		{
-			ft_mssleep(shared->cnf.time_eat / 2, shared);
 			pthread_mutex_lock(philo->right_fork);
 			pthread_mutex_lock(&shared->mutexes[VOICE]);
 			time_diff = time_diff_ms(shared->start_time, time_in_ms());
@@ -67,9 +66,9 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 			pthread_mutex_unlock(philo->left_fork);
 			pthread_mutex_unlock(philo->right_fork);
 		}
+		philo->servings++;
 		if (done)
 			return ;
-		philo->servings++;
 		if (philo->servings == shared->cnf.minimum_servings)
 		{
 			philo->servings++;
@@ -88,14 +87,6 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 
 		pthread_mutex_lock(&shared->mutexes[VOICE]);
 		time_diff = time_diff_ms(shared->start_time, time_in_ms());
-		philo->servings++;
-		if (philo->servings == shared->cnf.minimum_servings)
-		{
-			pthread_mutex_lock(&shared->mutexes[SERVINGS]);
-			shared->philos_done_eating++;
-			pthread_mutex_unlock(&shared->mutexes[SERVINGS]);
-			return ;
-		}
 		if (!done)
 			done = narrator(time_diff, philo->id, SLEEPING, shared);
 		pthread_mutex_unlock(&shared->mutexes[VOICE]);
