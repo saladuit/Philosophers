@@ -6,11 +6,39 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/09/07 17:12:21 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 19:36:12 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 19:52:13 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
+bool	try_to_eat(t_shared *shared, t_philo *philo, t_mutex *fst, t_mutex *scnd)
+{
+	bool	done;
+
+	done = false;
+	pthread_mutex_lock(fst);
+	pthread_mutex_lock(&shared->mutexes[VOICE]);
+	if (!done)
+		done = narrator(time_diff_ms(shared->start_time, time_in_ms()), \
+				philo->id, TOOK_FORK, shared);
+	pthread_mutex_unlock(&shared->mutexes[VOICE]);
+	pthread_mutex_lock(scnd);
+	pthread_mutex_lock(&shared->mutexes[VOICE]);
+	if (!done)
+		done = narrator(time_diff_ms(shared->start_time, time_in_ms()), \
+				philo->id, TOOK_FORK, shared);
+	if (!done)
+		done = narrator(time_diff_ms(shared->start_time, time_in_ms()), \
+				philo->id, EATING, shared);
+	pthread_mutex_unlock(&shared->mutexes[VOICE]);
+	pthread_mutex_lock(&shared->mutexes[TIME]);
+	philo->last_time_eaten = time_in_ms();
+	pthread_mutex_unlock(&shared->mutexes[TIME]);
+	ft_mssleep(shared->cnf.time_eat, shared);
+	pthread_mutex_unlock(scnd);
+	pthread_mutex_unlock(fst);
+	return (done);
+}
 
 void	start_feasting(t_shared *shared, t_philo *philo)
 {
@@ -21,77 +49,25 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 	while (true)
 	{
 		if (philo->id % 2 == 0)
-		{
-			pthread_mutex_lock(philo->left_fork);
-			pthread_mutex_lock(&shared->mutexes[VOICE]);
-			time_diff = time_diff_ms(shared->start_time, time_in_ms());
-			if (!done)
-				done = narrator(time_diff, philo->id, TOOK_FORK, shared);
-			pthread_mutex_unlock(&shared->mutexes[VOICE]);
-			pthread_mutex_lock(philo->right_fork);
-			pthread_mutex_lock(&shared->mutexes[VOICE]);
-			time_diff = time_diff_ms(shared->start_time, time_in_ms());
-			if (!done)
-				done = narrator(time_diff, philo->id, TOOK_FORK, shared);
-			if (!done)
-				done = narrator(time_diff, philo->id, EATING, shared);
-			pthread_mutex_unlock(&shared->mutexes[VOICE]);
-			pthread_mutex_lock(&shared->mutexes[TIME]);
-			philo->last_time_eaten = time_in_ms();
-			pthread_mutex_unlock(&shared->mutexes[TIME]);
-			ft_mssleep(shared->cnf.time_eat, shared);
-			pthread_mutex_unlock(philo->right_fork);
-			pthread_mutex_unlock(philo->left_fork);
-		}
+			try_to_eat(shared, philo, philo->left_fork, philo->right_fork);
 		else
-		{
-			pthread_mutex_lock(philo->right_fork);
-			pthread_mutex_lock(&shared->mutexes[VOICE]);
-			time_diff = time_diff_ms(shared->start_time, time_in_ms());
-			if (!done)
-				done = narrator(time_diff, philo->id, TOOK_FORK, shared);
-			pthread_mutex_unlock(&shared->mutexes[VOICE]);
-			pthread_mutex_lock(philo->left_fork);
-			pthread_mutex_lock(&shared->mutexes[VOICE]);
-			time_diff = time_diff_ms(shared->start_time, time_in_ms());
-			if (!done)
-				done = narrator(time_diff, philo->id, TOOK_FORK, shared);
-			if (!done)
-				done = narrator(time_diff, philo->id, EATING, shared);
-			pthread_mutex_unlock(&shared->mutexes[VOICE]);
-			pthread_mutex_lock(&shared->mutexes[TIME]);
-			philo->last_time_eaten = time_in_ms();
-			pthread_mutex_unlock(&shared->mutexes[TIME]);
-			ft_mssleep(shared->cnf.time_eat, shared);
-			pthread_mutex_unlock(philo->left_fork);
-			pthread_mutex_unlock(philo->right_fork);
-		}
+			try_to_eat(shared, philo, philo->right_fork, philo->left_fork);
 		philo->servings++;
 		if (done)
 			return ;
 		if (philo->servings == shared->cnf.minimum_servings)
 		{
-			philo->servings++;
-			if (philo->servings == shared->cnf.minimum_servings)
-			{
-				pthread_mutex_lock(&shared->mutexes[SERVINGS]);
-				shared->philos_done_eating++;
-				pthread_mutex_unlock(&shared->mutexes[SERVINGS]);
-				return ;
-			}
 			pthread_mutex_lock(&shared->mutexes[SERVINGS]);
 			shared->philos_done_eating++;
 			pthread_mutex_unlock(&shared->mutexes[SERVINGS]);
 			return ;
 		}
-
 		pthread_mutex_lock(&shared->mutexes[VOICE]);
 		time_diff = time_diff_ms(shared->start_time, time_in_ms());
 		if (!done)
 			done = narrator(time_diff, philo->id, SLEEPING, shared);
 		pthread_mutex_unlock(&shared->mutexes[VOICE]);
 		ft_mssleep(shared->cnf.time_sleep, shared);
-
 		if (done)
 			return ;
 		pthread_mutex_lock(&shared->mutexes[VOICE]);
