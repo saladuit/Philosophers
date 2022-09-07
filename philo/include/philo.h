@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 20:29:28 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 20:34:03 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,7 +124,7 @@ typedef struct s_shared
 
 typedef struct s_philo
 {
-	bool 		done;
+	bool		done;
 	int32_t		id;
 	int64_t		last_time_eaten;
 	int64_t		time_diff;
