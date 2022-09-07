@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 17:59:34 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 18:15:18 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,20 +71,20 @@ int32_t	philo(char **argv)
 
 	philosophers = NULL;
 	ft_bzero(&shared, sizeof(t_shared));
-	if (get_config(&shared.cnf, argv) == ERROR)
-		return (ERROR);
+	if (get_config(&shared.cnf, argv))
+		return (EINPUT);
 	if (shared.cnf.nb_philo == 1)
 	{
 		printf("%d\t%d\t%s\n", 0, 1, TOOK_FORK);
 		printf("%lld\t%d\t%s\n", shared.cnf.time_die, 1, DIED);
-		return (DONE);
+		return (SUCCESS);
 	}
-	if (allocate_memory(&shared, &philosophers, shared.cnf.nb_philo) == ERROR)
-		return (ERROR);
-	if (init_mutexes(&shared.mutexes, shared.cnf.nb_philo + MUTEX) == ERROR)
+	if (allocate_memory(&shared, &philosophers, shared.cnf.nb_philo))
+		return (EMALLOC);
+	if (init_mutexes(&shared.mutexes, shared.cnf.nb_philo + MUTEX))
 		return (deallocate_memory(&shared, &philosophers));
 	init_philos(&shared, shared.cnf.nb_philo);
-	if (breed_philosophers(&shared, &philosophers) == ERROR)
+	if (breed_philosophers(&shared, &philosophers))
 		return (clean_shared(&shared, &philosophers, shared.cnf.nb_philo));
 	monitor_philosophers(&shared);
 	return (clean_program(&shared, &philosophers, shared.cnf.nb_philo));

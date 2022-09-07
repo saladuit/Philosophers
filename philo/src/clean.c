@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/09/06 12:00:50 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 17:48:46 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 18:16:21 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,14 +42,14 @@ int32_t	deallocate_memory(t_shared *shared, pthread_t **philosophers)
 		free(shared->mutexes);
 		shared->mutexes = NULL;
 	}
-	return (ERROR);
+	return (EMUTEX);
 }
 
 int32_t	clean_shared(t_shared *shared, pthread_t **philosophers, int32_t count)
 {
 	clean_mutexes(&shared->mutexes, MUTEX + count);
 	deallocate_memory(shared, philosophers);
-	return (ERROR);
+	return (EPTHREAD);
 }
 
 int32_t	join_philosophers(pthread_t *philosophers, int32_t count)

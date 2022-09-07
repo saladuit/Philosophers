@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:03:41 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 17:49:37 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 18:06:09 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int32_t	get_config(t_config *cnf, char **argv)
 	if (cnf->time_die < 60 || cnf->time_eat < 60 || cnf->time_sleep < 60)
 		return (ERROR);
 	if (argv[5])
-		if (cnf->minimus_servings < 0)
+		if (cnf->minimum_servings < 0)
 			return (ERROR);
 	return (SUCCESS);
 }

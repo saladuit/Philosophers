@@ -6,12 +6,11 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:08:07 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 18:01:19 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 18:07:26 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
-#include <assert.h>
 
 int32_t	join_thread(pthread_t *thread)
 {

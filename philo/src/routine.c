@@ -6,12 +6,11 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/09/07 17:12:21 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 17:13:16 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 18:19:15 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
-
 
 void	start_feasting(t_shared *shared, t_philo *philo)
 {
@@ -129,9 +128,9 @@ void	*philosopher(void *ptr)
 	while (true)
 	{
 
-		if (mutex_api(&shared->mutexes[MUTERROR], checkerror, shared))
+		if (mutex_api(&shared->mutexes[MUTERROR], sharedbool, &shared->error))
 			return (NULL);
-		start = mutex_api(&shared->mutexes[START], canstart, shared);
+		start = mutex_api(&shared->mutexes[START], sharedbool, &shared->start);
 		if (start == true)
 			break ;
 		if (start == ERROR)

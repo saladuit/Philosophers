@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 18:03:55 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 18:18:12 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -165,6 +165,6 @@ int64_t		time_diff_ms(int64_t start, int64_t end);
 int64_t		time_in_ms(void);
 //print
 bool		narrator(int64_t time, int32_t id, char *str, t_shared *shared);
-void		ft_philo_error(t_message code);
+int32_t		ft_philo_error(t_message code);
 const char	*philo_messages(t_message code);
 #endif
