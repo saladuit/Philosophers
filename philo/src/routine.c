@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/09/07 17:12:21 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 19:52:13 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 20:29:48 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,9 +24,8 @@ bool	try_to_eat(t_shared *shared, t_philo *philo, t_mutex *fst, t_mutex *scnd)
 	pthread_mutex_unlock(&shared->mutexes[VOICE]);
 	pthread_mutex_lock(scnd);
 	pthread_mutex_lock(&shared->mutexes[VOICE]);
-	if (!done)
-		done = narrator(time_diff_ms(shared->start_time, time_in_ms()), \
-				philo->id, TOOK_FORK, shared);
+	done = narrator(time_diff_ms(shared->start_time, time_in_ms()), \
+			philo->id, TOOK_FORK, shared);
 	if (!done)
 		done = narrator(time_diff_ms(shared->start_time, time_in_ms()), \
 				philo->id, EATING, shared);
@@ -53,15 +52,16 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 		else
 			try_to_eat(shared, philo, philo->right_fork, philo->left_fork);
 		philo->servings++;
-		if (done)
-			return ;
 		if (philo->servings == shared->cnf.minimum_servings)
 		{
+			philo->done = true;
 			pthread_mutex_lock(&shared->mutexes[SERVINGS]);
 			shared->philos_done_eating++;
 			pthread_mutex_unlock(&shared->mutexes[SERVINGS]);
 			return ;
 		}
+		if (done)
+			return ;
 		pthread_mutex_lock(&shared->mutexes[VOICE]);
 		time_diff = time_diff_ms(shared->start_time, time_in_ms());
 		if (!done)

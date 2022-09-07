@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:03:41 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 18:06:09 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 20:30:08 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 void	construct_philo(t_shared *shared, t_philo *philo, int32_t i)
 {
+	philo->done = false;
 	philo->id = i + 1;
 	philo->last_time_eaten = time_in_ms();
 	philo->servings = 0;

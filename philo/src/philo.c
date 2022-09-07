@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 18:15:18 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 20:32:08 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int32_t	did_someone_die(void *ptr)
 {
 	t_philo		*philos;
 	t_shared	*shared;
-	int64_t		last_time_eaten;
+	int64_t		last_eaten;
 	int64_t		i;
 
 	i = 0;
@@ -38,9 +38,9 @@ int32_t	did_someone_die(void *ptr)
 	while (i < shared->cnf.nb_philo)
 	{
 		pthread_mutex_lock(&shared->mutexes[TIME]);
-		last_time_eaten = philos[i].last_time_eaten;
+		last_eaten = philos[i].last_time_eaten;
 		pthread_mutex_unlock(&shared->mutexes[TIME]);
-		if (time_in_ms() - last_time_eaten > shared->cnf.time_die)
+		if (time_in_ms() - last_eaten > shared->cnf.time_die && !philos[i].done)
 		{
 			philos[i].time_diff = time_diff_ms(shared->start_time, \
 					time_in_ms());
@@ -57,7 +57,7 @@ void	monitor_philosophers(t_shared *shared)
 {
 	while (true)
 	{
-		if (did_someone_die(shared) == DONE)
+		if (did_someone_die(shared))
 			return ;
 		if (mutex_api(&shared->mutexes[SERVINGS], check_servings, shared))
 			return ;
