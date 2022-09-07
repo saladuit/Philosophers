@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 16:19:10 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/07 15:25:20 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ bool	narrator(int64_t time, int32_t id, char *str, t_shared *shared)
 {
 	if (mutex_api(&shared->mutexes[DEAD], isdead, shared) == true)
 		return (true);
-	printf("%lld %d %s\n", time, id, str);
+	printf("%llld\t%d\t%s\n", time, id, str);
 	return (false);
 }
 
@@ -111,7 +111,6 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 		}
 		else
 		{
-			ft_mssleep(shared->cnf.time_eat / 2, shared);
 			pthread_mutex_lock(philo->right_fork);
 			pthread_mutex_lock(&shared->mutexes[VOICE]);
 			time_diff = time_diff_ms(shared->start_time, time_in_ms());
@@ -277,8 +276,7 @@ int32_t	philo(char **argv)
 		return (ERROR);
 	if (shared.cnf.nb_philo == 1)
 	{
-		printf("%d\t%d\t%s\n", 0, 1, TOOK_FORK);
-		printf("%lld\t%d\t%s\n", shared.cnf.time_die, 1, DIED);
+		printf("%d\t%d\t%s\n", shared.cnf.time_die, 1, DIED);
 		return (DONE);
 	}
 	if (allocate_memory(&shared, &philosophers, shared.cnf.nb_philo) == ERROR)
