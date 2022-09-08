@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/09/07 11:51:36 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 20:45:00 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/08 17:55:02 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,8 @@ int32_t	ft_philo_error(t_message code)
 {
 	if (!code)
 		return (EXIT_SUCCESS);
-	ft_error();
+	if (code != USAGE)
+		ft_error();
 	ft_putendl_fd(philo_messages(code), STDERR_FILENO);
 	return (EXIT_FAILURE);
 }

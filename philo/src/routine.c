@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/09/07 17:12:21 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 20:39:24 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/08 17:44:41 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,12 +67,11 @@ void	start_feasting(t_shared *shared, t_philo *philo)
 	bool	done;
 
 	done = false;
+	if (philo->id % 2 == 0)
+		usleep(250);
 	while (true)
 	{
-		if (philo->id % 2 == 0)
-			try_to_eat(shared, philo, philo->left_fork, philo->right_fork);
-		else
-			try_to_eat(shared, philo, philo->right_fork, philo->left_fork);
+		try_to_eat(shared, philo, philo->right_fork, philo->left_fork);
 		philo->servings++;
 		if (philo->servings == shared->cnf.minimum_servings)
 		{

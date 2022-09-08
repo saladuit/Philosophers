@@ -6,24 +6,11 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 20:32:08 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/08 18:01:56 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philo.h>
-
-//int32_t	narrate_died(void *ptr)
-//{
-//	t_philo	*philo;
-//
-//	philo = (t_philo *)ptr;
-//	philo->time_diff = time_diff_ms(philo->shared->start_time, time_in_ms());
-//	if (mutex_api(&philo->shared->mutexes[DEAD], isdead, philo->shared))
-//		return (DONE);
-//	narrator(philo->time_diff, philo->id, DIED, philo->shared);
-//	mutex_api(&philo->shared->mutexes[DEAD], philo_has_died, ptr);
-//	return (SUCCESS);
-//}
 
 int32_t	did_someone_die(void *ptr)
 {
@@ -64,6 +51,20 @@ void	monitor_philosophers(t_shared *shared)
 	}
 }
 
+int32_t	check_argv(char **argv)
+{
+	size_t	i;
+
+	i = 0;
+	while (argv[i])
+	{
+		if (!ft_strbapi(argv[i], ft_isdigit))
+			return (ERROR);
+		i++;
+	}
+	return (SUCCESS);
+}
+
 int32_t	philo(char **argv)
 {
 	t_shared	shared;
@@ -71,11 +72,12 @@ int32_t	philo(char **argv)
 
 	philosophers = NULL;
 	ft_bzero(&shared, sizeof(t_shared));
-	if (get_config(&shared.cnf, argv))
+	if (check_argv(&argv[1]) || get_config(&shared.cnf, argv))
 		return (EINPUT);
 	if (shared.cnf.nb_philo == 1)
 	{
 		printf("%d\t%d\t%s\n", 0, 1, TOOK_FORK);
+		usleep(shared.cnf.time_die * 1000);
 		printf("%lld\t%d\t%s\n", shared.cnf.time_die, 1, DIED);
 		return (SUCCESS);
 	}
