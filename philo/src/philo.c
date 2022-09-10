@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/22 18:10:43 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/10 17:50:27 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/10 21:38:27 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,10 +29,12 @@ int32_t	did_someone_die(void *ptr)
 		pthread_mutex_unlock(&shared->mutexes[TIME]);
 		if (time_in_ms() - last_eaten > shared->cnf.time_die && !philos[i].done)
 		{
+			pthread_mutex_lock(&shared->mutexes[VOICE]);
 			philos[i].time_diff = time_diff_ms(shared->start_time, \
 					time_in_ms());
 			narrator(philos[i].time_diff, philos[i].id, DIED, shared);
 			mutex_api(&shared->mutexes[DEAD], philo_has_died, shared);
+			pthread_mutex_unlock(&shared->mutexes[VOICE]);
 			return (DONE);
 		}
 		i++;
