@@ -6,16 +6,13 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/07/16 20:40:00 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/07 20:34:03 by safoh        \___)=(___/                 */
+/*   Updated: 2022/09/10 17:46:47 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef PHILO_H
 # define PHILO_H
 
-# define MAX_PHILOSOPHERS 200
-# define MAX_FORKS MAX_PHILOSOPHERS
-# define MIN_TIME 60
 # define ERROR -1
 # define DONE 1
 # define MUTEX 9
