@@ -56,3 +56,18 @@ philosopher dies.
 - Philosopher number 1 sits next to philosopher number number_of_philosophers.
 Any other philosopher number N sits between philosopher number N - 1 and philosopher number N + 1.
 
+### Allowed functions
+- memset
+- printf
+- malloc
+- free
+- write
+- usleep
+- gettimeofday
+- pthread_create
+- pthread_detach
+- pthread_join
+- pthread_mutex_init
+- pthread_mutex_destroy
+- pthread_mutex_lock
+- pthread_mutex_unlock
