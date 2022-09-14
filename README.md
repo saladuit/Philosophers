@@ -12,6 +12,8 @@ It is geared towords creating threads and discovering mutexes.
 ### Installing
 ```
 git clone https://github.com/saladuit/Philosophers.git
+cd Philosophers/philo
+make
 ```
 
 ### Executing program
