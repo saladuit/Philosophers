@@ -61,7 +61,7 @@ Mkfile.old
 dkms.conf
 
 build
-.json
+*.json
 .cache
 .make_data.txt
 vgcore.*
