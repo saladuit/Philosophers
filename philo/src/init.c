@@ -6,7 +6,7 @@
 /*   By: safoh <safoh@student.codam.nl>             //   \ \ __| | | \ \/ /   */
 /*                                                 (|     | )|_| |_| |>  <    */
 /*   Created: 2022/08/30 14:03:41 by safoh        /'\_   _/`\__|\__,_/_/\_\   */
-/*   Updated: 2022/09/10 17:50:01 by safoh        \___)=(___/                 */
+/*   Updated: 2022/10/30 16:09:26 by safoh        \___)=(___/                 */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,12 +72,18 @@ int32_t	allocate_memory(t_shared *shared, pthread_t **philosophers, int32_t n)
 
 int32_t	get_config(t_config *cnf, char **argv)
 {
+	if (!*argv[1]|| !*argv[2] || !*argv[2] || !*argv[3] || !*argv[4])
+		return (ERROR);
 	cnf->nb_philo = ft_atoi(argv[1]);
 	cnf->time_die = ft_atoi(argv[2]);
 	cnf->time_eat = ft_atoi(argv[3]);
 	cnf->time_sleep = ft_atoi(argv[4]);
 	if (argv[5])
+	{
+		if (!*argv[5])
+			return (ERROR);
 		cnf->minimum_servings = ft_atoi(argv[5]);
+	}
 	else
 		cnf->minimum_servings = -1;
 	if (cnf->nb_philo < 0 || cnf->nb_philo > 2047)
