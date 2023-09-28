@@ -80,7 +80,7 @@ int32_t	philo(char **argv)
 	{
 		printf("%d\t%d\t%s\n", 0, 1, TOOK_FORK);
 		usleep(shared.cnf.time_die * 1000);
-		printf("%lld\t%d\t%s\n", shared.cnf.time_die, 1, DIED);
+		printf("%ld\t%d\t%s\n", shared.cnf.time_die, 1, DIED);
 		return (SUCCESS);
 	}
 	if (allocate_memory(&shared, &philosophers, shared.cnf.nb_philo))

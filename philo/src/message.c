@@ -16,7 +16,7 @@ bool	narrator(int64_t time, int32_t id, char *str, t_shared *shared)
 {
 	if (mutex_api(&shared->mutexes[DEAD], sharedbool, &shared->dead) == true)
 		return (true);
-	printf("%lld %d %s\n", time, id, str);
+	printf("%ld %d %s\n", time, id, str);
 	return (false);
 }
 
